@@ -174,50 +174,123 @@
   }
 }
 
-@layer utilities {
+@layer components {
   .auth-container {
     @apply min-h-screen bg-peach-light p-4 md:p-8;
   }
+
   .auth-card {
     @apply mx-auto flex min-h-[90vh] max-w-7xl overflow-hidden rounded-[36px] bg-cream;
   }
+
   .form-input {
     @apply h-14 w-full rounded-2xl border border-beige px-4 text-text-primary placeholder:text-text-muted/80 outline-none transition-all duration-200;
     @apply hover:border-terracotta/30;
     @apply focus:border-terracotta focus:border-2 focus:ring-4 focus:ring-terracotta/10;
     background-color: #fff !important;
   }
+
   .form-input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 100px #fff inset !important;
     -webkit-text-fill-color: var(--text-primary) !important;
     caret-color: var(--text-primary);
   }
+
   .form-label {
     @apply mb-2 block text-sm font-semibold text-text-primary;
   }
+
   .form-btn {
     @apply flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-terracotta font-semibold text-white transition-all duration-200;
     @apply hover:bg-terracotta-dark hover:-translate-y-0.5;
     @apply active:translate-y-0;
   }
+
   .form-btn-outline {
     @apply flex h-14 w-full items-center justify-center gap-2 rounded-2xl border border-beige bg-white font-semibold text-text-primary transition-all duration-200;
     @apply hover:border-terracotta/30 hover:bg-cream;
   }
+
   .form-divider {
     @apply relative my-6;
   }
+
   .form-divider-line {
     @apply absolute inset-0 flex items-center;
   }
+
   .form-divider-line::before {
     content: "";
     @apply w-full border-t border-beige;
   }
+
   .form-divider-text {
     @apply relative flex justify-center;
   }
+
   .form-divider-text span {
     @apply bg-cream px-4 text-xs font-medium uppercase tracking-wider text-text-muted;
+  }
+
+  .app-dialog-content {
+    @apply rounded-[32px] border border-beige bg-white p-0 shadow-none;
+  }
+
+  .app-dialog-header {
+    @apply border-b border-beige px-8 py-6;
+  }
+
+  .app-dialog-title {
+    @apply text-2xl font-bold text-text-primary;
+  }
+
+  .app-dialog-description {
+    @apply mt-1 text-sm text-text-muted;
+  }
+
+  .app-dialog-body {
+    @apply px-8 py-6;
+  }
+
+  .app-dialog-footer {
+    @apply flex gap-3 border-t border-beige px-8 py-5;
+  }
+
+  .app-dialog-close {
+    @apply absolute top-5 right-5 rounded-xl p-2 text-text-muted transition-colors hover:bg-cream hover:text-text-primary;
+  }
+}
+
+@layer base {
+
+  /* Chrome, Edge, Safari */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--cream);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--peach);
+    border-radius: 999px;
+    border: 2px solid var(--cream);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--terracotta);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--peach) var(--cream);
   }
 }

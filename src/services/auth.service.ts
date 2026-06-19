@@ -1,7 +1,7 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
 import { refreshApi } from "@/utils/axios";
-import { AuthResponse, LoginInput } from "@/schemas/auth.schema";
+import { AuthResponse, LoginInput, RefreshTokenInput, RefreshTokenResponse, RegisterInput } from "@/schemas/auth.schema";
 
 const prefix = "/auth";
 
@@ -10,12 +10,20 @@ const authService = {
         return http.post<ApiResponse<AuthResponse>>(`${prefix}/login`, data);
     },
 
-    logout: () => {
-        return http.post<ApiResponse<null>>(`${prefix}/logout`);
+    register: (data: RegisterInput) => {
+        return http.post<ApiResponse<AuthResponse>>(`${prefix}/register`, data);
     },
 
-    refreshToken: () => {
-        return refreshApi.post<ApiResponse<{ accessToken: string }>>(`${prefix}/refresh-token`);
+    refreshToken: (data: RefreshTokenInput) => {
+        return refreshApi.post<ApiResponse<RefreshTokenResponse>>(`${prefix}/refresh`, data);
+    },
+
+    logout: (data: { refreshToken: string }) => {
+        return http.post<ApiResponse<null>>(`${prefix}/logout`, data);
+    },
+
+    logoutAll: () => {
+        return http.post<ApiResponse<null>>(`${prefix}/logout-all`);
     },
 };
 

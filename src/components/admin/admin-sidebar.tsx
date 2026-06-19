@@ -47,7 +47,7 @@ function SidebarItem({
                 collapsed && "justify-center px-0",
                 active
                     ? "bg-white text-terracotta shadow-md"
-                    : "text-white/80 hover:bg-white/15 hover:text-white"
+                    : "text-white/80 hover:bg-white hover:text-black"
             )}
         >
             <item.icon className="h-5 w-5 shrink-0" />

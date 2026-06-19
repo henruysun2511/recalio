@@ -133,15 +133,15 @@ export default function LoginPage() {
                             className="space-y-5"
                         >
                             <div className="space-y-2">
-                                <label className="form-label">Email</label>
+                                <label className="form-label">Username</label>
                                 <Input
-                                    placeholder="john@example.com"
+                                    placeholder="john_doe"
                                     className="form-input"
-                                    {...register("email")}
+                                    {...register("username")}
                                 />
-                                {errors.email && (
+                                {errors.username && (
                                     <p className="text-sm text-destructive">
-                                        {errors.email.message}
+                                        {errors.username.message}
                                     </p>
                                 )}
                             </div>

@@ -1,18 +1,13 @@
+import { UserResponse } from "@/schemas/auth.schema";
 import Cookies from "js-cookie";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
-    roleName: string;
-    username: string;
-    accessToken: string;
-}
-
 interface AuthState {
-    user: User | null;
+    user: UserResponse | null;
     accessToken: string | null;
     refreshToken: string | null;
-    setAuth: (user: User, token: string) => void;
+    setAuth: (user: UserResponse, token: string) => void;
     setAccessToken: (token: string) => void;
     setRefreshToken: (token: string) => void;
     logout: () => void;
