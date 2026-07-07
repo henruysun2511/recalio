@@ -28,7 +28,7 @@ export const reviewParamsSchema = z.object({
 export type ReviewParams = z.infer<typeof reviewParamsSchema>;
 
 export const createReviewSchema = z.object({
-    rating: z.number().int().min(1).max(5),
+    rating: z.number().int().min(1, "Đánh giá từ 1 đến 5 sao").max(5, "Đánh giá từ 1 đến 5 sao"),
     comment: z.string().optional(),
 });
 

@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import deckSettingService from "@/services/deck-setting.service";
 import { UpdateDeckSettingInput } from "@/schemas/deck-setting.schema";
-import { handleError } from "@/utils/handleError";
+
+export const DECK_SETTING_QUERY_KEY = ["deck-setting"];
 
 export const useDeckSetting = (deckId: string) => {
     return useQuery({
-        queryKey: ["deck-setting", deckId],
-        queryFn: () => deckSettingService.get(deckId),
+        queryKey: [...DECK_SETTING_QUERY_KEY, deckId],
+        queryFn: async () => {
+            const res = await deckSettingService.get(deckId);
+            return res.data;
+        },
         enabled: !!deckId,
     });
 };
@@ -19,11 +22,7 @@ export const useUpdateDeckSetting = () => {
         mutationFn: ({ deckId, data }: { deckId: string; data: UpdateDeckSettingInput }) =>
             deckSettingService.update(deckId, data),
         onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: ["deck-setting", variables.deckId] });
-            toast.success("Settings updated!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to update settings");
+            queryClient.invalidateQueries({ queryKey: [...DECK_SETTING_QUERY_KEY, variables.deckId] });
         },
     });
 };

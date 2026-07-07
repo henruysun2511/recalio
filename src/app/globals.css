@@ -174,7 +174,7 @@
   }
 }
 
-@layer components {
+@layer utilities {
   .auth-container {
     @apply min-h-screen bg-peach-light p-4 md:p-8;
   }
@@ -258,6 +258,62 @@
 
   .app-dialog-close {
     @apply absolute top-5 right-5 rounded-xl p-2 text-text-muted transition-colors hover:bg-cream hover:text-text-primary;
+  }
+
+  .admin-dialog-content {
+    @apply rounded-[2rem] border border-beige bg-white p-0 shadow-2xl;
+  }
+
+  .admin-dialog-header {
+    @apply p-8 border-b border-beige;
+  }
+
+  .admin-dialog-icon-box {
+    @apply size-12 rounded-2xl flex items-center justify-center mb-4;
+  }
+
+  .admin-dialog-title {
+    @apply text-2xl font-black tracking-tighter text-text-primary;
+  }
+
+  .admin-dialog-description {
+    @apply text-text-muted font-medium;
+  }
+
+  .admin-dialog-body {
+    @apply p-8 grid grid-cols-2 gap-6;
+  }
+
+  .admin-dialog-footer {
+    @apply p-8 border-t border-beige flex gap-3;
+  }
+
+  .admin-form-label {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] text-text-muted ml-1;
+  }
+
+  .admin-form-input {
+    @apply h-12 rounded-xl border-beige bg-white;
+  }
+
+  .admin-form-error {
+    @apply text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider;
+  }
+
+  .admin-field-card {
+    @apply flex items-center justify-between p-4 rounded-2xl bg-cream/50 border border-beige;
+  }
+
+  .admin-btn-cancel {
+    @apply h-12 px-6 rounded-xl font-bold text-text-muted hover:bg-cream transition-colors;
+  }
+
+  .admin-btn-primary {
+    @apply h-12 px-10 rounded-xl bg-primary text-white font-black shadow-lg shadow-primary/20;
+  }
+
+  .admin-btn-danger {
+    @apply h-12 px-8 rounded-xl bg-red-500 text-white font-black shadow-lg shadow-red-200 hover:bg-red-600 transition-all;
   }
 }
 

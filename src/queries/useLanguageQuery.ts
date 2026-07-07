@@ -1,21 +1,27 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import languageService from "@/services/language.service";
-import { CreateLanguageInput, UpdateLanguageInput } from "@/schemas/language.schema";
-import { handleError } from "@/utils/handleError";
+import { CreateLanguageInput, LanguageQuery, UpdateLanguageInput } from "@/schemas/language.schema";
+
+export const LANGUAGE_QUERY_KEY = ["languages"];
 
 export const useSupportedLanguages = () => {
     return useQuery({
-        queryKey: ["languages", "supported"],
-        queryFn: () => languageService.getSupported(),
+        queryKey: [...LANGUAGE_QUERY_KEY, "supported"],
+        queryFn: async () => {
+            const res = await languageService.getSupported();
+            return res.data;
+        },
         staleTime: 10 * 60 * 1000,
     });
 };
 
-export const useLanguages = () => {
+export const useLanguages = (params?: LanguageQuery) => {
     return useQuery({
-        queryKey: ["languages"],
-        queryFn: () => languageService.list(),
+        queryKey: [...LANGUAGE_QUERY_KEY, params],
+        queryFn: async () => {
+            const res = await languageService.list(params);
+            return res.data;
+        }
     });
 };
 
@@ -25,11 +31,7 @@ export const useCreateLanguage = () => {
     return useMutation({
         mutationFn: (data: CreateLanguageInput) => languageService.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["languages"] });
-            toast.success("Language created!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to create language");
+            queryClient.invalidateQueries({ queryKey: LANGUAGE_QUERY_KEY });
         },
     });
 };
@@ -40,11 +42,7 @@ export const useUpdateLanguage = () => {
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: UpdateLanguageInput }) => languageService.update(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["languages"] });
-            toast.success("Language updated!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to update language");
+            queryClient.invalidateQueries({ queryKey: LANGUAGE_QUERY_KEY });
         },
     });
 };
@@ -55,11 +53,7 @@ export const useDeleteLanguage = () => {
     return useMutation({
         mutationFn: (id: string) => languageService.delete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["languages"] });
-            toast.success("Language deleted!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to delete language");
+            queryClient.invalidateQueries({ queryKey: LANGUAGE_QUERY_KEY });
         },
     });
 };

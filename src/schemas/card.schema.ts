@@ -26,7 +26,7 @@ export type Card = z.infer<typeof cardSchema>;
 export const cardParamsSchema = z.object({
     page: z.coerce.number().optional().default(1),
     limit: z.coerce.number().optional().default(20),
-    state: z.nativeEnum(CardState).optional(),
+    state: z.nativeEnum(CardState, { message: "Trạng thái thẻ không hợp lệ" }).optional(),
 });
 
 export type CardParams = z.infer<typeof cardParamsSchema>;
@@ -40,9 +40,9 @@ export const dueCardsParamsSchema = z.object({
 export type DueCardsParams = z.infer<typeof dueCardsParamsSchema>;
 
 export const reviewCardSchema = z.object({
-    rating: z.nativeEnum(ReviewRating),
-    responseTimeMs: z.number().int().min(0),
-    sessionId: z.string().uuid().optional(),
+    rating: z.nativeEnum(ReviewRating, { message: "Đánh giá không hợp lệ" }),
+    responseTimeMs: z.number().int().min(0, "Thời gian phản hồi không được âm"),
+    sessionId: z.string().uuid("Session ID không hợp lệ").optional(),
 });
 
 export type ReviewCardInput = z.infer<typeof reviewCardSchema>;

@@ -1,12 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import authService from "@/services/auth.service";
 import { LoginInput, RegisterInput } from "@/schemas/auth.schema";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { handleError } from "@/utils/handleError";
 import Cookies from "js-cookie";
+import { UserRole } from "@/constants/type";
 
+export const AUTH_QUERY_KEY = ["auth"];
 const ACCESS_TOKEN_KEY = "accessToken";
 
 export const useLogin = () => {
@@ -20,8 +20,11 @@ export const useLogin = () => {
             setAuth(user, accessToken);
             useAuthStore.getState().setRefreshToken(refreshToken);
             Cookies.set(ACCESS_TOKEN_KEY, accessToken, { expires: 7 });
-            toast.success("Login successful!");
-            router.replace("/admin/overview");
+            if (user.role === UserRole.ADMIN) {
+                router.replace("/admin/overview");
+            } else {
+                router.replace("/overview");
+            }
         },
     });
 };
@@ -32,16 +35,8 @@ export const useRegister = () => {
 
     return useMutation({
         mutationFn: (data: RegisterInput) => authService.register(data),
-        onSuccess: (response) => {
-            const { accessToken, refreshToken, user } = response.data.data;
-            setAuth(user, accessToken);
-            useAuthStore.getState().setRefreshToken(refreshToken);
-            Cookies.set(ACCESS_TOKEN_KEY, accessToken, { expires: 7 });
-            toast.success("Registration successful!");
-            router.replace("/admin/overview");
-        },
-        onError: (error) => {
-            handleError(error, "Registration failed");
+        onSuccess: () => {
+            router.replace("/auth/login");
         },
     });
 };

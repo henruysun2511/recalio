@@ -1,28 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import studySessionService from "@/services/study-session.service";
 import { CreateSessionInput, ReviewLogParams, SessionParams } from "@/schemas/study-session.schema";
-import { handleError } from "@/utils/handleError";
+
+export const STUDY_SESSION_QUERY_KEY = ["study-sessions"];
 
 export const useStudySessions = (params?: SessionParams) => {
     return useQuery({
-        queryKey: ["study-sessions", params],
-        queryFn: () => studySessionService.list(params),
+        queryKey: [...STUDY_SESSION_QUERY_KEY, params],
+        queryFn: async () => {
+            const res = await studySessionService.list(params);
+            return res.data;
+        },
     });
 };
 
 export const useStudySession = (id: string) => {
     return useQuery({
-        queryKey: ["study-sessions", id],
-        queryFn: () => studySessionService.getById(id),
+        queryKey: [...STUDY_SESSION_QUERY_KEY, id],
+        queryFn: async () => {
+            const res = await studySessionService.getById(id);
+            return res.data;
+        },
         enabled: !!id,
     });
 };
 
 export const useReviewLogs = (sessionId: string, params?: ReviewLogParams) => {
     return useQuery({
-        queryKey: ["study-sessions", sessionId, "review-logs", params],
-        queryFn: () => studySessionService.getReviewLogs(sessionId, params),
+        queryKey: [...STUDY_SESSION_QUERY_KEY, sessionId, "review-logs", params],
+        queryFn: async () => {
+            const res = await studySessionService.getReviewLogs(sessionId, params);
+            return res.data;
+        },
         enabled: !!sessionId,
     });
 };
@@ -33,10 +42,7 @@ export const useCreateSession = () => {
     return useMutation({
         mutationFn: (data: CreateSessionInput) => studySessionService.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["study-sessions"] });
-        },
-        onError: (error) => {
-            handleError(error, "Failed to start session");
+            queryClient.invalidateQueries({ queryKey: STUDY_SESSION_QUERY_KEY });
         },
     });
 };
@@ -47,11 +53,7 @@ export const useEndSession = () => {
     return useMutation({
         mutationFn: (id: string) => studySessionService.end(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["study-sessions"] });
-            toast.success("Session ended!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to end session");
+            queryClient.invalidateQueries({ queryKey: STUDY_SESSION_QUERY_KEY });
         },
     });
 };

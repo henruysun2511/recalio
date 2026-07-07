@@ -15,7 +15,7 @@ const authService = {
     },
 
     refreshToken: (data: RefreshTokenInput) => {
-        return refreshApi.post<ApiResponse<RefreshTokenResponse>>(`${prefix}/refresh`, data);
+        return refreshApi.post<ApiResponse<RefreshTokenResponse>>(`${prefix}/refresh-token`, data);
     },
 
     logout: (data: { refreshToken: string }) => {

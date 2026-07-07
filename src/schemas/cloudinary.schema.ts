@@ -8,7 +8,7 @@ export const uploadMediaResponseSchema = z.object({
 export type UploadMediaResponse = z.infer<typeof uploadMediaResponseSchema>;
 
 export const deleteMediaSchema = z.object({
-    publicId: z.string().min(1, "Public ID is required"),
+    publicId: z.string().min(1, "Public ID không được để trống"),
     resourceType: z.enum(["image", "video", "raw", "auto"]).default("image"),
 });
 

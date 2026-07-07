@@ -37,13 +37,13 @@ export function DataTable<TData, TValue>({
         <div className="border border-beige overflow-hidden bg-white shadow-sm rounded-xl">
             <div className="overflow-x-auto">
                 <Table>
-                    <TableHeader className="bg-peach-light">
+                    <TableHeader className="bg-primary">
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id} className="border-none hover:bg-transparent">
                                 {headerGroup.headers.map((header, index) => (
                                     <TableHead
                                         key={header.id}
-                                        className={`text-sm font-semibold text-text-primary py-4 ${index === 0 ? "pl-6" : ""
+                                        className={`text-sm font-semibold text-white py-4 ${index === 0 ? "pl-6" : ""
                                             } ${header.id === 'actions' ? "text-right pr-6" : ""
                                             }`}
                                     >
@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center text-text-muted italic">
-                                    No data available
+                                    Không có dữ liệu
                                 </TableCell>
                             </TableRow>
                         )}

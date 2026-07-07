@@ -1,44 +1,59 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import followService from "@/services/follow.service";
 import { FollowParams } from "@/schemas/follow.schema";
-import { handleError } from "@/utils/handleError";
+
+export const FOLLOW_QUERY_KEY = ["follow"];
 
 export const useFollowStatus = (userId: string) => {
     return useQuery({
-        queryKey: ["follow", "status", userId],
-        queryFn: () => followService.checkStatus(userId),
+        queryKey: [...FOLLOW_QUERY_KEY, "status", userId],
+        queryFn: async () => {
+            const res = await followService.checkStatus(userId);
+            return res.data;
+        },
         enabled: !!userId,
     });
 };
 
 export const useUserFollowing = (userId: string, params?: FollowParams) => {
     return useQuery({
-        queryKey: ["follow", userId, "following", params],
-        queryFn: () => followService.listFollowing(userId, params),
+        queryKey: [...FOLLOW_QUERY_KEY, userId, "following", params],
+        queryFn: async () => {
+            const res = await followService.listFollowing(userId, params);
+            return res.data;
+        },
         enabled: !!userId,
     });
 };
 
 export const useUserFollowers = (userId: string, params?: FollowParams) => {
     return useQuery({
-        queryKey: ["follow", userId, "followers", params],
-        queryFn: () => followService.listFollowers(userId, params),
+        queryKey: [...FOLLOW_QUERY_KEY, userId, "followers", params],
+        queryFn: async () => {
+            const res = await followService.listFollowers(userId, params);
+            return res.data;
+        },
         enabled: !!userId,
     });
 };
 
 export const useMyFollowing = (params?: FollowParams) => {
     return useQuery({
-        queryKey: ["follow", "my-following", params],
-        queryFn: () => followService.myFollowing(params),
+        queryKey: [...FOLLOW_QUERY_KEY, "my-following", params],
+        queryFn: async () => {
+            const res = await followService.myFollowing(params);
+            return res.data;
+        },
     });
 };
 
 export const useMyFollowers = (params?: FollowParams) => {
     return useQuery({
-        queryKey: ["follow", "my-followers", params],
-        queryFn: () => followService.myFollowers(params),
+        queryKey: [...FOLLOW_QUERY_KEY, "my-followers", params],
+        queryFn: async () => {
+            const res = await followService.myFollowers(params);
+            return res.data;
+        },
     });
 };
 
@@ -48,11 +63,7 @@ export const useFollowUser = () => {
     return useMutation({
         mutationFn: (userId: string) => followService.follow(userId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["follow"] });
-            toast.success("Followed!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to follow user");
+            queryClient.invalidateQueries({ queryKey: FOLLOW_QUERY_KEY });
         },
     });
 };
@@ -63,11 +74,7 @@ export const useUnfollowUser = () => {
     return useMutation({
         mutationFn: (userId: string) => followService.unfollow(userId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["follow"] });
-            toast.success("Unfollowed!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to unfollow user");
+            queryClient.invalidateQueries({ queryKey: FOLLOW_QUERY_KEY });
         },
     });
 };

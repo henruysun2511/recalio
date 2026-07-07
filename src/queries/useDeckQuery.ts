@@ -1,41 +1,56 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import deckService from "@/services/deck.service";
 import { CreateDeckInput, DeckParams, MoveDeckInput, UpdateDeckInput } from "@/schemas/deck.schema";
-import { handleError } from "@/utils/handleError";
+
+export const DECK_QUERY_KEY = ["decks"];
 
 export const usePublicDecks = (params?: DeckParams) => {
     return useQuery({
-        queryKey: ["decks", "public", params],
-        queryFn: () => deckService.listPublic(params),
+        queryKey: [...DECK_QUERY_KEY, "public", params],
+        queryFn: async () => {
+            const res = await deckService.listPublic(params);
+            return res.data;
+        },
     });
 };
 
 export const useMyDecks = (params?: DeckParams) => {
     return useQuery({
-        queryKey: ["decks", "mine", params],
-        queryFn: () => deckService.listMine(params),
+        queryKey: [...DECK_QUERY_KEY, "mine", params],
+        queryFn: async () => {
+            const res = await deckService.listMine(params);
+            return res.data;
+        },
     });
 };
 
 export const useArchivedDecks = (params?: DeckParams) => {
     return useQuery({
-        queryKey: ["decks", "archived", params],
-        queryFn: () => deckService.listArchived(params),
+        queryKey: [...DECK_QUERY_KEY, "archived", params],
+        queryFn: async () => {
+            const res = await deckService.listArchived(params);
+            return res.data;
+        },
     });
 };
 
 export const useClonedDecks = (params?: DeckParams) => {
     return useQuery({
-        queryKey: ["decks", "cloned", params],
-        queryFn: () => deckService.listCloned(params),
+        queryKey: [...DECK_QUERY_KEY, "cloned", params],
+        queryFn: async () => {
+            const res = await deckService.listCloned(params);
+            return res.data;
+        },
     });
 };
 
 export const useDeck = (id: string) => {
     return useQuery({
-        queryKey: ["decks", id],
-        queryFn: () => deckService.getById(id),
+        queryKey: [...DECK_QUERY_KEY, id],
+        queryFn: async () => {
+            const res = await deckService.getById(id);
+            return res.data;
+        },
         enabled: !!id,
     });
 };
@@ -46,11 +61,7 @@ export const useCreateDeck = () => {
     return useMutation({
         mutationFn: (data: CreateDeckInput) => deckService.create(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["decks"] });
-            toast.success("Deck created!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to create deck");
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
         },
     });
 };
@@ -61,11 +72,7 @@ export const useUpdateDeck = () => {
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: UpdateDeckInput }) => deckService.update(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["decks"] });
-            toast.success("Deck updated!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to update deck");
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
         },
     });
 };
@@ -76,11 +83,7 @@ export const useDeleteDeck = () => {
     return useMutation({
         mutationFn: (id: string) => deckService.delete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["decks"] });
-            toast.success("Deck deleted!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to delete deck");
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
         },
     });
 };
@@ -91,11 +94,7 @@ export const useMoveDeck = () => {
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: MoveDeckInput }) => deckService.move(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["decks"] });
-            toast.success("Deck moved!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to move deck");
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
         },
     });
 };
@@ -106,11 +105,7 @@ export const useCloneDeck = () => {
     return useMutation({
         mutationFn: (id: string) => deckService.clone(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["decks"] });
-            toast.success("Deck cloned!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to clone deck");
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
         },
     });
 };

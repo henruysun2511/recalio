@@ -4,8 +4,8 @@ import { jwtDecode } from "jwt-decode";
 
 interface JwtPayload {
     sub: string;
-    roleName: string;
-    jti: string;
+    role: string;
+    username: string;
     iat?: number;
     exp?: number;
 }
@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
     if (accessToken) {
         try {
             const decoded = jwtDecode<JwtPayload>(accessToken);
-            roleName = decoded.roleName;
+            roleName = decoded.role;
         } catch {
             // invalid token
         }

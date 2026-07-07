@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import userService from "@/services/user.service";
-import { UpdateProfileInput } from "@/schemas/user.schema";
-import { handleError } from "@/utils/handleError";
+import { UpdateProfileInput, UpdateRoleInput, UserQuery } from "@/schemas/user.schema";
+
+export const USER_QUERY_KEY = ["user"];
 
 export const useMyProfile = () => {
     return useQuery({
-        queryKey: ["me"],
-        queryFn: () => userService.getMe(),
+        queryKey: [...USER_QUERY_KEY, "me"],
+        queryFn: async () => {
+            const res = await userService.getMe();
+            return res.data;
+        },
     });
 };
 
@@ -17,11 +20,39 @@ export const useUpdateProfile = () => {
     return useMutation({
         mutationFn: (data: UpdateProfileInput) => userService.updateMe(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["me"] });
-            toast.success("Profile updated!");
+            queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
         },
-        onError: (error) => {
-            handleError(error, "Failed to update profile");
+    });
+};
+
+export const useUsers = (params?: UserQuery) => {
+    return useQuery({
+        queryKey: [...USER_QUERY_KEY, "admin", "list", params],
+        queryFn: async () => {
+            const res = await userService.list(params);
+            return res.data;
+        },
+    });
+};
+
+export const useToggleActive = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => userService.toggleActive(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [...USER_QUERY_KEY, "admin"] });
+        },
+    });
+};
+
+export const useUpdateUserRole = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: UpdateRoleInput }) => userService.updateRole(id, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [...USER_QUERY_KEY, "admin"] });
         },
     });
 };

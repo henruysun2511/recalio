@@ -1,23 +1,23 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-    username: z.string().min(1, "Username is required"),
-    password: z.string().min(1, "Password is required"),
+    username: z.string().min(1, "Tên đăng nhập không được để trống"),
+    password: z.string().min(1, "Mật khẩu không được để trống"),
 });
 
 export type LoginInput = z.infer<typeof loginSchema>;
 
 export const registerSchema = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters").max(100),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    displayName: z.string().min(1, "Display name is required").max(255),
+    username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự").max(100, "Tên đăng nhập tối đa 100 ký tự"),
+    email: z.string().email("Email không hợp lệ"),
+    password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    displayName: z.string().min(1, "Tên hiển thị không được để trống").max(255, "Tên hiển thị tối đa 255 ký tự"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 
 export const refreshTokenSchema = z.object({
-    refreshToken: z.string().min(1, "Refresh token is required"),
+    refreshToken: z.string().min(1, "Refresh token không được để trống"),
 });
 
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;

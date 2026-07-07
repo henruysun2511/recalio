@@ -30,7 +30,7 @@ export type NoteParams = z.infer<typeof noteParamsSchema>;
 
 export const previewNoteSchema = z.object({
     words: z.array(z.object({
-        word: z.string().min(1),
+        word: z.string().min(1, "Từ không được để trống"),
         detectedLanguage: z.string().optional(),
         userAudioUrl: z.string().optional(),
     })),
@@ -39,9 +39,9 @@ export const previewNoteSchema = z.object({
 export type PreviewNoteInput = z.infer<typeof previewNoteSchema>;
 
 export const confirmNoteSchema = z.object({
-    deckId: z.string().uuid(),
+    deckId: z.string().uuid("Deck ID không hợp lệ"),
     words: z.array(z.object({
-        word: z.string().min(1),
+        word: z.string().min(1, "Từ không được để trống"),
         meaning: z.string().optional(),
         ipa: z.string().optional(),
         partOfSpeech: z.nativeEnum(PartOfSpeech).optional(),
@@ -72,12 +72,12 @@ export const updateNoteSchema = z.object({
 export type UpdateNoteInput = z.infer<typeof updateNoteSchema>;
 
 export const documentNoteSchema = z.object({
-    deckId: z.string().uuid(),
+    deckId: z.string().uuid("Deck ID không hợp lệ"),
     languageId: z.string(),
-    templateId: z.string().uuid(),
+    templateId: z.string().uuid("Template ID không hợp lệ"),
     fileName: z.string().optional(),
     items: z.array(z.object({
-        word: z.string().min(1),
+        word: z.string().min(1, "Từ không được để trống"),
         meaning: z.string().optional(),
         ipa: z.string().optional(),
         example: z.string().optional(),

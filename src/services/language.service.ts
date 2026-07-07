@@ -1,26 +1,28 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
-import { CreateLanguageInput, Language, UpdateLanguageInput } from "@/schemas/language.schema";
+import { CreateLanguageInput, Language, LanguageQuery, UpdateLanguageInput } from "@/schemas/language.schema";
+
+const prefix = "/languages";
 
 const languageService = {
     getSupported: () => {
-        return http.get<ApiResponse<Language[]>>("/languages/supported");
+        return http.get<ApiResponse<Language[]>>(`${prefix}/supported`);
     },
 
-    list: () => {
-        return http.get<ApiResponse<Language[]>>("/languages");
+    list: (params?: LanguageQuery) => {
+        return http.get<ApiResponse<Language[]>>(prefix, { params });
     },
 
     create: (data: CreateLanguageInput) => {
-        return http.post<ApiResponse<Language>>("/languages", data);
+        return http.post<ApiResponse<Language>>(prefix, data);
     },
 
     update: (id: string, data: UpdateLanguageInput) => {
-        return http.patch<ApiResponse<Language>>(`/languages/${id}`, data);
+        return http.patch<ApiResponse<Language>>(`${prefix}/${id}`, data);
     },
 
     delete: (id: string) => {
-        return http.delete<ApiResponse<null>>(`/languages/${id}`);
+        return http.delete<ApiResponse<null>>(`${prefix}/${id}`);
     },
 };
 

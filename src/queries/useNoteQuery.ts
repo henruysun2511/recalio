@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import noteService from "@/services/note.service";
 import { ConfirmNoteInput, DocumentNoteInput, NoteParams, PreviewNoteInput, UpdateNoteInput } from "@/schemas/note.schema";
-import { handleError } from "@/utils/handleError";
+
+export const NOTE_QUERY_KEY = ["notes"];
 
 export const useNotesByDeck = (deckId: string, params?: NoteParams) => {
     return useQuery({
-        queryKey: ["notes", deckId, params],
-        queryFn: () => noteService.listByDeck(deckId, params),
+        queryKey: [...NOTE_QUERY_KEY, deckId, params],
+        queryFn: async () => {
+            const res = await noteService.listByDeck(deckId, params);
+            return res.data;
+        },
         enabled: !!deckId,
     });
 };
@@ -24,11 +27,7 @@ export const useConfirmNotes = () => {
     return useMutation({
         mutationFn: (data: ConfirmNoteInput) => noteService.confirm(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["notes"] });
-            toast.success("Notes created!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to create notes");
+            queryClient.invalidateQueries({ queryKey: NOTE_QUERY_KEY });
         },
     });
 };
@@ -39,11 +38,7 @@ export const useUpdateNote = () => {
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: UpdateNoteInput }) => noteService.update(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["notes"] });
-            toast.success("Note updated!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to update note");
+            queryClient.invalidateQueries({ queryKey: NOTE_QUERY_KEY });
         },
     });
 };
@@ -54,11 +49,7 @@ export const useDeleteNote = () => {
     return useMutation({
         mutationFn: (id: string) => noteService.delete(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["notes"] });
-            toast.success("Note deleted!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to delete note");
+            queryClient.invalidateQueries({ queryKey: NOTE_QUERY_KEY });
         },
     });
 };
@@ -69,11 +60,7 @@ export const useDocumentNotes = () => {
     return useMutation({
         mutationFn: (data: DocumentNoteInput) => noteService.fromDocument(data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["notes"] });
-            toast.success("Document processed!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to process document");
+            queryClient.invalidateQueries({ queryKey: NOTE_QUERY_KEY });
         },
     });
 };

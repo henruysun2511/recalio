@@ -4,7 +4,7 @@ import { PanelLeftClose, PanelLeft } from "lucide-react"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminSidebarRight } from "@/components/admin/admin-sidebar-right"
-import { SidebarToggle } from "@/components/admin/sidebar-toggle"
+import { SidebarToggle } from "@/components/common/sidebar-toggle"
 
 
 

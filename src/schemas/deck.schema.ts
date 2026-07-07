@@ -23,13 +23,13 @@ export const deckParamsSchema = z.object({
     limit: z.coerce.number().optional().default(20),
     search: z.string().optional(),
     sortOrder: z.enum([SortOrder.DESC, SortOrder.ASC]).optional().default(SortOrder.DESC),
-    sortBy: z.enum([DeckSortBy.NAME, DeckSortBy.CREATED_AT, DeckSortBy.DOWNLOAD_COUNT]).optional().default(DeckSortBy.CREATED_AT),
+    sort: z.enum([DeckSortBy.NAME, DeckSortBy.CREATED_AT, DeckSortBy.DOWNLOAD_COUNT]).optional().default(DeckSortBy.CREATED_AT),
 });
 
 export type DeckParams = z.infer<typeof deckParamsSchema>;
 
 export const createDeckSchema = z.object({
-    name: z.string().min(1, "Name is required").max(255),
+    name: z.string().min(1, "Tên bộ thẻ không được để trống").max(255, "Tên bộ thẻ tối đa 255 ký tự"),
     fullPath: z.string().optional(),
     description: z.string().optional(),
     coverImage: z.string().optional(),
@@ -41,7 +41,7 @@ export const createDeckSchema = z.object({
 export type CreateDeckInput = z.infer<typeof createDeckSchema>;
 
 export const updateDeckSchema = z.object({
-    name: z.string().min(1).max(255).optional(),
+    name: z.string().min(1, "Tên bộ thẻ không được để trống").max(255, "Tên bộ thẻ tối đa 255 ký tự").optional(),
     fullPath: z.string().optional(),
     description: z.string().optional(),
     coverImage: z.string().optional(),

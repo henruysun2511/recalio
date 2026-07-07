@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import reportService from "@/services/report.service";
 import { CreateReportInput, ReportParams, UpdateReportStatusInput } from "@/schemas/report.schema";
-import { handleError } from "@/utils/handleError";
+
+export const REPORT_QUERY_KEY = ["reports"];
 
 export const useReports = (params?: ReportParams) => {
     return useQuery({
-        queryKey: ["reports", params],
-        queryFn: () => reportService.list(params),
+        queryKey: [...REPORT_QUERY_KEY, params],
+        queryFn: async () => {
+            const res = await reportService.list(params);
+            return res.data;
+        },
     });
 };
 
@@ -18,11 +21,7 @@ export const useCreateReport = () => {
         mutationFn: ({ deckId, data }: { deckId: string; data: CreateReportInput }) =>
             reportService.create(deckId, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["reports"] });
-            toast.success("Report submitted!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to submit report");
+            queryClient.invalidateQueries({ queryKey: REPORT_QUERY_KEY });
         },
     });
 };
@@ -34,11 +33,7 @@ export const useUpdateReportStatus = () => {
         mutationFn: ({ id, data }: { id: string; data: UpdateReportStatusInput }) =>
             reportService.updateStatus(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["reports"] });
-            toast.success("Report status updated!");
-        },
-        onError: (error) => {
-            handleError(error, "Failed to update report status");
+            queryClient.invalidateQueries({ queryKey: REPORT_QUERY_KEY });
         },
     });
 };

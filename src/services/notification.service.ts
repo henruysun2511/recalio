@@ -9,33 +9,36 @@ import {
 } from "@/schemas/notification.schema";
 import { Pagination } from "@/constants/pagination";
 
+const prefix = "/notifications";
+const settingsPrefix = "/notification-settings";
+
 const notificationService = {
     getSettings: () => {
-        return http.get<ApiResponse<NotificationSetting>>("/notification-settings");
+        return http.get<ApiResponse<NotificationSetting>>(settingsPrefix);
     },
 
     updateSettings: (data: UpdateNotificationSettingInput) => {
-        return http.patch<ApiResponse<NotificationSetting>>("/notification-settings", data);
+        return http.patch<ApiResponse<NotificationSetting>>(settingsPrefix, data);
     },
 
     list: (params?: NotificationParams) => {
-        return http.get<ApiResponse<Notification[]> & { meta?: Pagination }>("/notifications", { params });
+        return http.get<ApiResponse<Notification[]> & { meta?: Pagination }>(prefix, { params });
     },
 
     getUnreadCount: () => {
-        return http.get<ApiResponse<{ count: number }>>("/notifications/unread-count");
+        return http.get<ApiResponse<{ count: number }>>(`${prefix}/unread-count`);
     },
 
     markAllRead: () => {
-        return http.patch<ApiResponse<null>>("/notifications/read-all");
+        return http.patch<ApiResponse<null>>(`${prefix}/read-all`);
     },
 
     markRead: (id: string) => {
-        return http.patch<ApiResponse<null>>(`/notifications/${id}/read`);
+        return http.patch<ApiResponse<null>>(`${prefix}/${id}/read`);
     },
 
     create: (data: CreateNotificationInput) => {
-        return http.post<ApiResponse<Notification>>("/notifications", data);
+        return http.post<ApiResponse<Notification>>(prefix, data);
     },
 };
 

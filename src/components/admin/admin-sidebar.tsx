@@ -10,23 +10,24 @@ import {
     BarChart3,
     Settings,
     ClipboardList,
+    Languages,
 } from "lucide-react"
 
 import { useSidebar } from "@/components/ui/sidebar"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
+import { LogoutButton } from "../common/logout-button"
 
 const items = [
-    { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
-    { title: "Decks", url: "/admin/decks", icon: BookOpen },
-    { title: "Users", url: "/admin/users", icon: Users },
-    { title: "Reports", url: "/admin/reports", icon: ClipboardList },
-    { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
+    { title: "Overview", url: "/admin/overview", icon: LayoutDashboard },
+    { title: "Users", url: "/admin/user", icon: Users },
+    { title: "Languages", url: "/admin/language", icon: Languages },
+    { title: "Decks", url: "/admin/deck", icon: BookOpen },
+    { title: "Reports", url: "/admin/report", icon: ClipboardList },
+    { title: "Settings", url: "/admin/setting", icon: Settings },
 ]
 
-const bottomItems = [
-    { title: "Settings", url: "/admin/settings", icon: Settings },
-]
+const bottomItems = []
 
 function SidebarItem({
     item,
@@ -100,14 +101,7 @@ export function AdminSidebar() {
 
             {/* Bottom section */}
             <div className="mt-auto flex shrink-0 flex-col gap-3 px-3">
-                {bottomItems.map((item) => (
-                    <SidebarItem
-                        key={item.title}
-                        item={item}
-                        collapsed={collapsed}
-                        pathname={pathname}
-                    />
-                ))}
+                <LogoutButton collapsed={collapsed} />
             </div>
         </aside>
     )

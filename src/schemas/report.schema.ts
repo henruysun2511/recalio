@@ -15,7 +15,7 @@ export const reportSchema = z.object({
 export type Report = z.infer<typeof reportSchema>;
 
 export const createReportSchema = z.object({
-    reason: z.nativeEnum(ReportReason),
+    reason: z.nativeEnum(ReportReason, { message: "Lý do báo cáo không hợp lệ" }),
     description: z.string().optional(),
 });
 
@@ -29,7 +29,7 @@ export const reportParamsSchema = z.object({
 export type ReportParams = z.infer<typeof reportParamsSchema>;
 
 export const updateReportStatusSchema = z.object({
-    status: z.nativeEnum(ReportStatus),
+    status: z.nativeEnum(ReportStatus, { message: "Trạng thái báo cáo không hợp lệ" }),
 });
 
 export type UpdateReportStatusInput = z.infer<typeof updateReportStatusSchema>;

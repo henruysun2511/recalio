@@ -36,7 +36,7 @@ export type Notification = z.infer<typeof notificationSchema>;
 export const notificationParamsSchema = z.object({
     page: z.coerce.number().optional().default(1),
     limit: z.coerce.number().optional().default(20),
-    type: z.nativeEnum(NotificationType).optional(),
+    type: z.nativeEnum(NotificationType, { message: "Loại thông báo không hợp lệ" }).optional(),
     isRead: z.boolean().optional(),
     sortBy: z.enum([NotificationSortBy.SENT_AT, NotificationSortBy.TYPE]).optional().default(NotificationSortBy.SENT_AT),
     sortOrder: z.enum([SortOrder.DESC, SortOrder.ASC]).optional().default(SortOrder.DESC),
@@ -45,11 +45,11 @@ export const notificationParamsSchema = z.object({
 export type NotificationParams = z.infer<typeof notificationParamsSchema>;
 
 export const createNotificationSchema = z.object({
-    type: z.nativeEnum(NotificationType).optional(),
-    title: z.string().min(1),
+    type: z.nativeEnum(NotificationType, { message: "Loại thông báo không hợp lệ" }).optional(),
+    title: z.string().min(1, "Tiêu đề không được để trống"),
     body: z.string().optional(),
     data: z.any().optional(),
-    channel: z.nativeEnum(NotificationChannel).optional(),
+    channel: z.nativeEnum(NotificationChannel, { message: "Kênh thông báo không hợp lệ" }).optional(),
     userId: z.string().uuid().optional(),
 });
 
