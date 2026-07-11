@@ -1,6 +1,8 @@
 "use client"
 
+import Link from "next/link"
 import { DeckResponse } from "@/schemas/deck.schema"
+import { timeAgo } from "@/utils/timeAgo"
 import {
     Download,
     Layers,
@@ -17,6 +19,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { getColor } from "@/utils/getColor"
 
 interface DeckCardProps {
     deck: DeckResponse
@@ -25,43 +28,6 @@ interface DeckCardProps {
     onArchive?: (id: string) => void
     onReport?: (id: string) => void
     onClone?: (id: string) => void
-}
-
-const pastelColors = [
-    "bg-peach",
-    "bg-yellow-soft",
-    "bg-blue-soft",
-    "bg-green-soft",
-    "bg-purple-soft",
-    "bg-pink-soft",
-]
-
-function getColor(id: string) {
-    let hash = 0
-
-    for (let i = 0; i < id.length; i++) {
-        hash = id.charCodeAt(i) + ((hash << 5) - hash)
-    }
-
-    return pastelColors[Math.abs(hash) % pastelColors.length]
-}
-
-function timeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime()
-
-    const days = Math.floor(diff / 86400000)
-
-    if (days === 0) return "Today"
-    if (days === 1) return "1 day ago"
-    if (days < 7) return `${days} days ago`
-
-    const weeks = Math.floor(days / 7)
-
-    if (weeks < 4) return `${weeks} weeks ago`
-
-    const months = Math.floor(days / 30)
-
-    return `${months} months ago`
 }
 
 export function DeckCard({
@@ -77,10 +43,12 @@ export function DeckCard({
         : "bg-primary text-white"
 
     return (
-        <div
+        <Link
+            href={`/deck/${deck.id}`}
             className="
                 group
                 relative
+                block
                 overflow-hidden
                 rounded-3xl
                 border
@@ -112,9 +80,6 @@ export function DeckCard({
                             w-full
                             items-center
                             justify-center
-                            bg-gradient-to-br
-                            from-neutral-100
-                            to-neutral-200/60
                             ${getColor(deck.id)}
                         `}
                     >
@@ -158,11 +123,12 @@ export function DeckCard({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <button
+                            onClick={(e) => e.stopPropagation()}
                             className="
                                     absolute
                                     right-3
                                     top-3
-                                    z-10
+                                    z-20
                                     rounded-xl
                                     border
                                     border-neutral-200
@@ -182,13 +148,13 @@ export function DeckCard({
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end" className="w-28 rounded-xl">
-                        {onEdit && <DropdownMenuItem onClick={() => onEdit(deck)}>Chỉnh sửa</DropdownMenuItem>}
-                        {onArchive && <DropdownMenuItem onClick={() => onArchive(deck.id)}>Lưu trữ</DropdownMenuItem>}
-                        {onClone && <DropdownMenuItem onClick={() => onClone(deck.id)}>Sao chép</DropdownMenuItem>}
-                        {onReport && <DropdownMenuItem onClick={() => onReport(deck.id)} className="text-red-600 focus:bg-red-50 focus:text-red-600">Tố cáo</DropdownMenuItem>}
+                        {onEdit && <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onEdit(deck) }}>Chỉnh sửa</DropdownMenuItem>}
+                        {onArchive && <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onArchive(deck.id) }}>Lưu trữ</DropdownMenuItem>}
+                        {onClone && <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onClone(deck.id) }}>Sao chép</DropdownMenuItem>}
+                        {onReport && <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onReport(deck.id) }} className="text-red-600 focus:bg-red-50 focus:text-red-600">Tố cáo</DropdownMenuItem>}
                         {onDelete && (
                             <DropdownMenuItem
-                                onClick={() => onDelete(deck.id)}
+                                onClick={(e) => { e.stopPropagation(); onDelete(deck.id) }}
                                 className="text-red-600 focus:bg-red-50 focus:text-red-600"
                             >
                                 Xóa
@@ -211,7 +177,7 @@ export function DeckCard({
                         </div>
                     )}
                     <span className="text-xs text-text-muted font-medium">
-                        {timeAgo(deck.updatedAt || deck.createdAt)}
+                        {timeAgo(deck.updatedAt || deck.createdAt, "en")}
                     </span>
                 </div>
 
@@ -285,6 +251,6 @@ export function DeckCard({
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     )
 }

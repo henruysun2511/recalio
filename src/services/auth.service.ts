@@ -22,8 +22,8 @@ const authService = {
         return http.post<ApiResponse<null>>(`${prefix}/logout`, data);
     },
 
-    logoutAll: () => {
-        return http.post<ApiResponse<null>>(`${prefix}/logout-all`);
+    changePassword: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string; confirmPassword: string }) => {
+        return http.post<ApiResponse<null>>(`${prefix}/change-password`, { currentPassword, newPassword });
     },
 };
 

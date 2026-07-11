@@ -5,6 +5,7 @@ import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { AdminSidebar } from "@/components/admin/admin-sidebar"
 import { AdminSidebarRight } from "@/components/admin/admin-sidebar-right"
 import { SidebarToggle } from "@/components/common/sidebar-toggle"
+import { UserNotification } from "@/components/common/user-notification"
 
 
 
@@ -21,8 +22,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                     {/* Main Content Area */}
                     <main className="flex h-full min-h-0 flex-1 flex-col bg-cream p-4 md:p-8 overflow-hidden">
-                        <div className="flex items-center gap-2 pb-4 shrink-0">
+                        <div className="flex items-center justify-between pb-4 shrink-0">
                             <SidebarToggle />
+                            <UserNotification />
                         </div>
 
                         <div className="flex-1 min-h-0 overflow-y-auto w-full space-y-4">

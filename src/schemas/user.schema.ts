@@ -4,6 +4,7 @@ export const updateProfileSchema = z.object({
     displayName: z.string().min(1, "Tên hiển thị không được để trống").max(255, "Tên hiển thị tối đa 255 ký tự").optional(),
     bio: z.string().optional(),
     avatarUrl: z.string().url("URL không hợp lệ").optional(),
+    timezone: z.string().optional(),
 });
 
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
@@ -13,6 +14,13 @@ export const updateRoleSchema = z.object({
 });
 
 export type UpdateRoleInput = z.infer<typeof updateRoleSchema>;
+
+export interface UserStats {
+    totalCards: number;
+    totalReviews: number;
+    totalStudyTimeMs: number;
+    totalStudyDays: number;
+}
 
 export interface UserProfile {
     id: string;
@@ -26,6 +34,21 @@ export interface UserProfile {
     timezone?: string;
     createdAt: string;
     updatedAt?: string;
+    stats?: UserStats;
+    followerCount: number;
+    followingCount: number;
+}
+
+export interface PublicProfile {
+    id: string;
+    username: string;
+    displayName: string;
+    avatarUrl: string | null;
+    bio: string | null;
+    createdAt: string;
+    stats: UserStats;
+    followerCount: number;
+    followingCount: number;
 }
 
 export interface UserQuery {

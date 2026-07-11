@@ -36,10 +36,6 @@ const noteTemplateService = {
         return http.get<ApiResponse<CardTemplate[]>>(`${prefix}/${noteTemplateId}/card-templates`);
     },
 
-    getCardTemplate: (noteTemplateId: string, id: string) => {
-        return http.get<ApiResponse<CardTemplate>>(`${prefix}/${noteTemplateId}/card-templates/${id}`);
-    },
-
     createCardTemplate: (noteTemplateId: string, data: CreateCardTemplateInput) => {
         return http.post<ApiResponse<CardTemplate>>(`${prefix}/${noteTemplateId}/card-templates`, data);
     },

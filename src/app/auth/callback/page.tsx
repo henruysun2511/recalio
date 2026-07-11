@@ -16,20 +16,23 @@ export default function AuthCallbackPage() {
     useEffect(() => {
         const accessToken = searchParams.get("accessToken");
         const refreshToken = searchParams.get("refreshToken");
+        const userId = searchParams.get("userId");
         const username = searchParams.get("username");
+        const displayName = searchParams.get("displayName");
+        const avatarUrl = searchParams.get("avatarUrl");
         const role = searchParams.get("role");
 
-        if (!accessToken || !username) {
+        if (!accessToken || !username || !userId) {
             router.replace("/login");
             return;
         }
 
         const user = {
-            id: "",
+            id: userId,
             username,
             email: "",
-            displayName: username,
-            avatarUrl: null,
+            displayName: displayName || username,
+            avatarUrl: avatarUrl || null,
             isActive: true,
             createdAt: "",
             updatedAt: "",
@@ -56,7 +59,7 @@ export default function AuthCallbackPage() {
     }, [router, searchParams]);
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-peach-light p-6">
+        <div className="flex min-h-screen items-center justify-center ">
             <div className="w-full max-w-md rounded-[36px] border border-beige bg-cream p-10 text-center">
                 {/* Logo */}
                 <div className="mx-auto mb-6 flex size-20 items-center justify-center rounded-[28px] bg-terracotta">

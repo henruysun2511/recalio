@@ -51,6 +51,7 @@ export const createNotificationSchema = z.object({
     data: z.any().optional(),
     channel: z.nativeEnum(NotificationChannel, { message: "Kênh thông báo không hợp lệ" }).optional(),
     userId: z.string().uuid().optional(),
+    username: z.string().optional(),
 });
 
 export type CreateNotificationInput = z.infer<typeof createNotificationSchema>;

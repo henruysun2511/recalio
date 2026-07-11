@@ -68,7 +68,7 @@ function SelectContent({
       <SelectPrimitive.Content
         data-slot="select-content"
         className={cn(
-          "relative z-50 min-w-[8rem] overflow-hidden rounded-2xl border border-gray-100 bg-white text-gray-950 shadow-xl p-1",
+          "relative z-50 min-w-[8rem] overflow-y-auto max-h-60 rounded-2xl border border-gray-100 bg-white text-gray-950 shadow-xl p-1",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           position === "popper" && "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className
@@ -76,7 +76,7 @@ function SelectContent({
         position={position}
         {...props}
       >
-        <SelectPrimitive.Viewport className="p-1">
+        <SelectPrimitive.Viewport className="p-1 max-h-56">
           {children}
         </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>

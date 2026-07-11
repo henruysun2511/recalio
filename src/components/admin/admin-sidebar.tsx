@@ -11,6 +11,13 @@ import {
     Settings,
     ClipboardList,
     Languages,
+    FileText,
+    Flag,
+    Star,
+    Trophy,
+    Bell,
+    MessageSquareText,
+    Brain,
 } from "lucide-react"
 
 import { useSidebar } from "@/components/ui/sidebar"
@@ -22,12 +29,16 @@ const items = [
     { title: "Overview", url: "/admin/overview", icon: LayoutDashboard },
     { title: "Users", url: "/admin/user", icon: Users },
     { title: "Languages", url: "/admin/language", icon: Languages },
+    { title: "Templates", url: "/admin/template", icon: FileText },
+    { title: "Achievements", url: "/admin/achievement", icon: Trophy },
     { title: "Decks", url: "/admin/deck", icon: BookOpen },
-    { title: "Reports", url: "/admin/report", icon: ClipboardList },
+    { title: "Deck Reports", url: "/admin/deck-report", icon: Flag },
+    { title: "Posts", url: "/admin/post", icon: ClipboardList },
+    { title: "Suggestions", url: "/admin/suggestion", icon: MessageSquareText },
+    { title: "Notifications", url: "/admin/notification", icon: Bell },
     { title: "Settings", url: "/admin/setting", icon: Settings },
 ]
 
-const bottomItems = []
 
 function SidebarItem({
     item,
@@ -84,7 +95,20 @@ export function AdminSidebar() {
         >
             {/* Logo */}
             <div className="flex shrink-0 items-center justify-center pb-8">
-                {/* Bạn có thể đặt component Logo hoặc text ở đây */}
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta text-white">
+                    <Brain size={24} />
+                </div>
+                {!collapsed && (
+                    <div className="flex flex-col">
+                        <h2 className="text-lg font-black tracking-tight text-white">
+                            Recalio
+                        </h2>
+
+                        <p className="text-xs font-medium tracking-wide text-white/70">
+                            Admin management
+                        </p>
+                    </div>
+                )}
             </div>
 
             {/* Navigation */}

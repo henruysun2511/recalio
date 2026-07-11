@@ -14,7 +14,6 @@ export const useNotesByDeck = (deckId: string, params?: NoteParams) => {
         enabled: !!deckId,
     });
 };
-
 export const usePreviewNotes = () => {
     return useMutation({
         mutationFn: (data: PreviewNoteInput) => noteService.preview(data),

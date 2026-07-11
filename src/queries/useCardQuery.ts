@@ -26,11 +26,12 @@ export const useDueCards = (params?: DueCardsParams) => {
     });
 };
 
-export const useCardStats = (deckId?: string) => {
+export const useCardStats = (userId?: string, deckId?: string) => {
+    const params = userId ? { userId, ...(deckId ? { deckId } : {}) } : deckId;
     return useQuery({
-        queryKey: [...CARD_QUERY_KEY, "stats", deckId],
+        queryKey: [...CARD_QUERY_KEY, "stats", params],
         queryFn: async () => {
-            const res = await cardService.getStats(deckId);
+            const res = await cardService.getStats(params);
             return res.data;
         },
     });
@@ -55,17 +56,6 @@ export const useReviewCard = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: CARD_QUERY_KEY });
             queryClient.invalidateQueries({ queryKey: STUDY_SESSION_QUERY_KEY });
-        },
-    });
-};
-
-export const useFlagCard = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: ({ id, flags }: { id: string; flags: number }) => cardService.flag(id, flags),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: CARD_QUERY_KEY });
         },
     });
 };

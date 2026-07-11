@@ -1,20 +1,16 @@
 import { ApiResponse } from "@/constants/apiResponse"
 import http from "@/utils/http"
 import { CreateCommentInput, PostComment, CommentQuery, UpdateCommentInput } from "@/schemas/post-comment.schema"
-import { Pagination } from "@/constants/pagination"
 
 const prefix = "/posts"
 
-interface CommentListResponse {
-    comments: PostComment[]
-    total: number
-    page: number
-    limit: number
-}
-
 const postCommentService = {
     list: (postId: string, params?: CommentQuery) => {
-        return http.get<ApiResponse<CommentListResponse>>(`${prefix}/${postId}/comments`, { params })
+        return http.get<ApiResponse<PostComment[]>>(`${prefix}/${postId}/comments`, { params })
+    },
+
+    listReplies: (commentId: string, params?: CommentQuery) => {
+        return http.get<ApiResponse<PostComment[]>>(`/comments/${commentId}/replies`, { params })
     },
 
     create: (postId: string, data: CreateCommentInput) => {

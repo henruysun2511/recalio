@@ -36,27 +36,6 @@ export const useUserFollowers = (userId: string, params?: FollowParams) => {
         enabled: !!userId,
     });
 };
-
-export const useMyFollowing = (params?: FollowParams) => {
-    return useQuery({
-        queryKey: [...FOLLOW_QUERY_KEY, "my-following", params],
-        queryFn: async () => {
-            const res = await followService.myFollowing(params);
-            return res.data;
-        },
-    });
-};
-
-export const useMyFollowers = (params?: FollowParams) => {
-    return useQuery({
-        queryKey: [...FOLLOW_QUERY_KEY, "my-followers", params],
-        queryFn: async () => {
-            const res = await followService.myFollowers(params);
-            return res.data;
-        },
-    });
-};
-
 export const useFollowUser = () => {
     const queryClient = useQueryClient();
 

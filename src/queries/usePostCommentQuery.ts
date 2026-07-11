@@ -3,6 +3,7 @@ import postCommentService from "@/services/post-comment.service"
 import { CreateCommentInput, CommentQuery, UpdateCommentInput } from "@/schemas/post-comment.schema"
 
 export const COMMENT_QUERY_KEY = ["post-comments"]
+export const REPLY_QUERY_KEY = ["comment-replies"]
 
 export const usePostComments = (postId: string, params?: CommentQuery) => {
     return useQuery({
@@ -15,6 +16,17 @@ export const usePostComments = (postId: string, params?: CommentQuery) => {
     })
 }
 
+export const useCommentReplies = (commentId: string, params?: CommentQuery) => {
+    return useQuery({
+        queryKey: [...REPLY_QUERY_KEY, commentId, params],
+        queryFn: async () => {
+            const res = await postCommentService.listReplies(commentId, params)
+            return res.data
+        },
+        enabled: !!commentId,
+    })
+}
+
 export const useCreateComment = () => {
     const queryClient = useQueryClient()
 
@@ -23,6 +35,7 @@ export const useCreateComment = () => {
             postCommentService.create(postId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: COMMENT_QUERY_KEY })
+            queryClient.invalidateQueries({ queryKey: REPLY_QUERY_KEY })
         },
     })
 }
@@ -35,6 +48,7 @@ export const useUpdateComment = () => {
             postCommentService.update(commentId, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: COMMENT_QUERY_KEY })
+            queryClient.invalidateQueries({ queryKey: REPLY_QUERY_KEY })
         },
     })
 }
@@ -46,6 +60,7 @@ export const useDeleteComment = () => {
         mutationFn: (commentId: string) => postCommentService.delete(commentId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: COMMENT_QUERY_KEY })
+            queryClient.invalidateQueries({ queryKey: REPLY_QUERY_KEY })
         },
     })
 }
@@ -56,7 +71,7 @@ export const useToggleCommentLike = () => {
     return useMutation({
         mutationFn: (commentId: string) => postCommentService.toggleLike(commentId),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: COMMENT_QUERY_KEY })
+            queryClient.invalidateQueries({ queryKey: [COMMENT_QUERY_KEY, REPLY_QUERY_KEY] })
         },
     })
 }

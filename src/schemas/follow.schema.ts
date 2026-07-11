@@ -7,6 +7,7 @@ export const followUserSchema = z.object({
     displayName: z.string(),
     avatarUrl: z.string().nullable(),
     followedAt: z.string(),
+    isFollowing: z.boolean().optional(),
 });
 
 export type FollowUser = z.infer<typeof followUserSchema>;

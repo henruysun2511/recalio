@@ -1,24 +1,28 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
-import { CreateDeckInput, DeckParams, DeckResponse, MoveDeckInput, UpdateDeckInput } from "@/schemas/deck.schema";
+import { CreateDeckInput, DeckParams, DeckResponse, UpdateDeckInput } from "@/schemas/deck.schema";
 import { Pagination } from "@/constants/pagination";
 
 const prefix = "/decks";
 
 const deckService = {
-    listPublic: (params?: DeckParams) => {
+    listPublic: (params?: Partial<DeckParams>) => {
         return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(prefix, { params });
     },
 
-    listMine: (params?: DeckParams) => {
+    listMine: (params?: Partial<DeckParams>) => {
         return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/me`, { params });
     },
 
-    listArchived: (params?: DeckParams) => {
+    listArchived: (params?: Partial<DeckParams>) => {
         return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/archived`, { params });
     },
 
-    listCloned: (params?: DeckParams) => {
+    listFeatured: (params?: Partial<DeckParams>) => {
+        return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/featured`, { params });
+    },
+
+    listCloned: (params?: Partial<DeckParams>) => {
         return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/cloned`, { params });
     },
 
@@ -38,16 +42,24 @@ const deckService = {
         return http.delete<ApiResponse<null>>(`${prefix}/${id}`);
     },
 
-    move: (id: string, data: MoveDeckInput) => {
-        return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/move`, data);
-    },
-
     clone: (id: string) => {
         return http.post<ApiResponse<DeckResponse>>(`${prefix}/${id}/clone`);
     },
 
+    toggleArchive: (id: string) => {
+        return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/archive`);
+    },
+
     toggleBan: (id: string) => {
         return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/ban`);
+    },
+
+    toggleFeatured: (id: string) => {
+        return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/feature`);
+    },
+
+    listAdminPublic: (params?: Partial<DeckParams>) => {
+        return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/admin/public`, { params });
     },
 };
 

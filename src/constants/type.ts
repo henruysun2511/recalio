@@ -34,6 +34,8 @@ export enum PartOfSpeech {
     OTHER = "OTHER",
 }
 
+export const PARTS_OF_SPEECH = Object.values(PartOfSpeech);
+
 export enum CardState {
     NEW = "NEW",
     LEARNING = "LEARNING",
@@ -47,12 +49,6 @@ export enum ReviewRating {
     HARD = "HARD",
     GOOD = "GOOD",
     EASY = "EASY",
-}
-
-export enum StudyMode {
-    NORMAL = "NORMAL",
-    CRAM = "CRAM",
-    PREVIEW = "PREVIEW",
 }
 
 export enum NotificationType {

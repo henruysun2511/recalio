@@ -1,46 +1,61 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import deckService from "@/services/deck.service";
-import { CreateDeckInput, DeckParams, MoveDeckInput, UpdateDeckInput } from "@/schemas/deck.schema";
+import { CreateDeckInput, DeckParams, UpdateDeckInput } from "@/schemas/deck.schema";
 
 export const DECK_QUERY_KEY = ["decks"];
 
-export const usePublicDecks = (params?: DeckParams) => {
+export const usePublicDecks = (params?: Partial<DeckParams>, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: [...DECK_QUERY_KEY, "public", params],
         queryFn: async () => {
             const res = await deckService.listPublic(params);
             return res.data;
         },
+        enabled: options?.enabled ?? true,
     });
 };
 
-export const useMyDecks = (params?: DeckParams) => {
+export const useMyDecks = (params?: Partial<DeckParams>, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: [...DECK_QUERY_KEY, "mine", params],
         queryFn: async () => {
             const res = await deckService.listMine(params);
             return res.data;
         },
+        enabled: options?.enabled ?? true,
     });
 };
 
-export const useArchivedDecks = (params?: DeckParams) => {
+export const useArchivedDecks = (params?: Partial<DeckParams>, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: [...DECK_QUERY_KEY, "archived", params],
         queryFn: async () => {
             const res = await deckService.listArchived(params);
             return res.data;
         },
+        enabled: options?.enabled ?? true,
     });
 };
 
-export const useClonedDecks = (params?: DeckParams) => {
+export const useFeaturedDecks = (params?: Partial<DeckParams>, options?: { enabled?: boolean }) => {
+    return useQuery({
+        queryKey: [...DECK_QUERY_KEY, "featured", params],
+        queryFn: async () => {
+            const res = await deckService.listFeatured(params);
+            return res.data;
+        },
+        enabled: options?.enabled ?? true,
+    });
+};
+
+export const useClonedDecks = (params?: Partial<DeckParams>, options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: [...DECK_QUERY_KEY, "cloned", params],
         queryFn: async () => {
             const res = await deckService.listCloned(params);
             return res.data;
         },
+        enabled: options?.enabled ?? true,
     });
 };
 
@@ -88,17 +103,6 @@ export const useDeleteDeck = () => {
     });
 };
 
-export const useMoveDeck = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: MoveDeckInput }) => deckService.move(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
-        },
-    });
-};
-
 export const useCloneDeck = () => {
     const queryClient = useQueryClient();
 
@@ -106,6 +110,50 @@ export const useCloneDeck = () => {
         mutationFn: (id: string) => deckService.clone(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
+        },
+    });
+};
+
+export const useToggleArchive = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => deckService.toggleArchive(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
+        },
+    });
+};
+
+export const useToggleBan = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => deckService.toggleBan(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
+            queryClient.invalidateQueries({ queryKey: ["reports"] });
+        },
+    });
+};
+
+export const useToggleFeatured = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => deckService.toggleFeatured(id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: DECK_QUERY_KEY });
+        },
+    });
+};
+
+export const useAdminPublicDecks = (params?: Partial<DeckParams>) => {
+    return useQuery({
+        queryKey: [...DECK_QUERY_KEY, "admin-public", params],
+        queryFn: async () => {
+            const res = await deckService.listAdminPublic(params);
+            return res.data;
         },
     });
 };

@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
-import { UpdateProfileInput, UserProfile, UserQuery, UserListResponse, UpdateRoleInput } from "@/schemas/user.schema";
+import { UpdateProfileInput, UserProfile, PublicProfile, UserQuery, UserListResponse, UpdateRoleInput } from "@/schemas/user.schema";
 
 const prefix = "/users";
 
@@ -13,6 +13,10 @@ const userService = {
         return http.patch<ApiResponse<UserProfile>>(`${prefix}/me`, data);
     },
 
+    getPublicProfile: (username: string) => {
+        return http.get<ApiResponse<PublicProfile>>(`${prefix}/${username}`);
+    },
+
     list: (params?: UserQuery) => {
         return http.get<ApiResponse<UserListResponse>>(prefix, { params });
     },
@@ -23,6 +27,10 @@ const userService = {
 
     updateRole: (id: string, data: UpdateRoleInput) => {
         return http.patch<ApiResponse<UserProfile>>(`${prefix}/${id}/role`, data);
+    },
+
+    deleteAccount: () => {
+        return http.delete<ApiResponse<null>>(`${prefix}/me`);
     },
 };
 

@@ -1,16 +1,8 @@
 import { ApiResponse } from "@/constants/apiResponse"
 import http from "@/utils/http"
 import { CreatePostInput, Post, PostQuery, ReportPostInput, UpdatePostInput } from "@/schemas/post.schema"
-import { Pagination } from "@/constants/pagination"
 
 const prefix = "/posts"
-
-interface PostListResponse {
-    posts: Post[]
-    total: number
-    page: number
-    limit: number
-}
 
 const postService = {
     create: (data: CreatePostInput) => {
@@ -18,7 +10,7 @@ const postService = {
     },
 
     list: (params?: PostQuery) => {
-        return http.get<ApiResponse<PostListResponse>>(prefix, { params })
+        return http.get<ApiResponse<Post[]>>(prefix, { params })
     },
 
     update: (id: string, data: UpdatePostInput) => {
@@ -38,7 +30,7 @@ const postService = {
     },
 
     listAdmin: (params?: PostQuery) => {
-        return http.get<ApiResponse<PostListResponse>>(`${prefix}/admin/all`, { params })
+        return http.get<ApiResponse<Post[]>>(`${prefix}/admin/reported`, { params })
     },
 
     ban: (id: string, isBanned: boolean) => {

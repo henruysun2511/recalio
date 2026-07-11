@@ -1,9 +1,7 @@
-import { StudyMode } from "@/constants/type";
 import { z } from "zod";
 
 export const createSessionSchema = z.object({
     deckId: z.string().uuid().optional(),
-    mode: z.nativeEnum(StudyMode).optional(),
 });
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
@@ -26,7 +24,6 @@ export type ReviewLogParams = z.infer<typeof reviewLogParamsSchema>;
 export interface StudySession {
     id: string;
     deckId: string | null;
-    mode: string;
     startedAt: string;
     endedAt: string | null;
     stats?: {
@@ -48,4 +45,10 @@ export interface ReviewLog {
     stateBefore: string;
     stateAfter: string;
     reviewedAt: string;
+    card?: {
+        note: {
+            word: string | null;
+            meaning: string | null;
+        };
+    };
 }

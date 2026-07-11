@@ -40,7 +40,10 @@ export const useCreateSession = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data: CreateSessionInput) => studySessionService.create(data),
+        mutationFn: async (data: CreateSessionInput) => {
+            const res = await studySessionService.create(data);
+            return res.data;
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: STUDY_SESSION_QUERY_KEY });
         },

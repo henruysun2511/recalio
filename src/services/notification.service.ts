@@ -26,7 +26,7 @@ const notificationService = {
     },
 
     getUnreadCount: () => {
-        return http.get<ApiResponse<{ count: number }>>(`${prefix}/unread-count`);
+        return http.get<ApiResponse<{ unread: number }>>(`${prefix}/unread-count`);
     },
 
     markAllRead: () => {

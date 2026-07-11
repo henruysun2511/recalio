@@ -24,6 +24,8 @@ export const deckParamsSchema = z.object({
     search: z.string().optional(),
     sortOrder: z.enum([SortOrder.DESC, SortOrder.ASC]).optional().default(SortOrder.DESC),
     sort: z.enum([DeckSortBy.NAME, DeckSortBy.CREATED_AT, DeckSortBy.DOWNLOAD_COUNT]).optional().default(DeckSortBy.CREATED_AT),
+    isPublic: z.coerce.boolean().optional(),
+    userId: z.string().optional(),
 });
 
 export type DeckParams = z.infer<typeof deckParamsSchema>;
@@ -52,12 +54,6 @@ export const updateDeckSchema = z.object({
 
 export type UpdateDeckInput = z.infer<typeof updateDeckSchema>;
 
-export const moveDeckSchema = z.object({
-    parentId: z.string().uuid().nullable(),
-});
-
-export type MoveDeckInput = z.infer<typeof moveDeckSchema>;
-
 export interface DeckResponse {
     id: string;
     userId: string;
@@ -67,6 +63,8 @@ export interface DeckResponse {
     coverImage: string | null;
     isArchived: boolean;
     isPublic: boolean;
+    isBanned: boolean;
+    isFeatured: boolean;
     tags: string[];
     downloadCount: number;
     createdAt: string;
@@ -80,5 +78,12 @@ export interface DeckResponse {
     _count?: {
         notes: number;
         cards: number;
+    };
+    averageRating?: number;
+    ratingCount?: number;
+    progress?: {
+        dueCards: number;
+        totalReviews: number;
+        retentionRate: number;
     };
 }

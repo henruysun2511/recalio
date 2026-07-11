@@ -14,8 +14,9 @@ const cardService = {
         return http.get<ApiResponse<Card[]> & { meta?: Pagination }>(`${prefix}/due`, { params });
     },
 
-    getStats: (deckId?: string) => {
-        return http.get<ApiResponse<CardStats>>(`${prefix}/stats`, { params: { deckId } });
+    getStats: (params?: string | { deckId?: string; userId?: string }) => {
+        const queryParams = typeof params === 'string' ? { deckId: params } : params ?? {};
+        return http.get<ApiResponse<CardStats>>(`${prefix}/stats`, { params: queryParams });
     },
 
     getById: (id: string) => {
@@ -24,10 +25,6 @@ const cardService = {
 
     review: (id: string, data: ReviewCardInput) => {
         return http.post<ApiResponse<Card>>(`${prefix}/${id}/review`, data);
-    },
-
-    flag: (id: string, flags: number) => {
-        return http.patch<ApiResponse<null>>(`${prefix}/${id}/flag`, { flags });
     },
 
     toggleSuspend: (id: string) => {

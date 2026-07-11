@@ -7,7 +7,6 @@ export const cardSchema = z.object({
     deckId: z.string().uuid(),
     cardTemplateId: z.string().uuid(),
     state: z.nativeEnum(CardState),
-    flags: z.number().int(),
     due: z.string(),
     frontHtml: z.string(),
     backHtml: z.string(),
@@ -16,8 +15,10 @@ export const cardSchema = z.object({
         word: z.string(),
         meaning: z.string(),
         ipa: z.string().nullable().optional(),
+        partOfSpeech: z.string().nullable().optional(),
         example: z.string().nullable().optional(),
         audioUrl: z.string().nullable().optional(),
+        imageUrl: z.string().nullable().optional(),
     }).optional(),
 });
 
@@ -52,5 +53,6 @@ export interface CardStats {
     learning: number;
     review: number;
     due: number;
+    suspended: number;
     total: number;
 }

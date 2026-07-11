@@ -15,8 +15,8 @@ export const postCommentSchema = z.object({
         username: z.string(),
         displayName: z.string(),
         avatarUrl: z.string().nullable(),
-    }).optional(),
-    replies: z.array(z.any()).optional(),
+    }),
+    _count: z.object({ replies: z.number() }).optional(),
 })
 
 export type PostComment = z.infer<typeof postCommentSchema>

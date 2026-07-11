@@ -9,7 +9,7 @@ import { DeckSkeleton } from "@/components/common/skeleton/deck-skeleton"
 import { DeckCard } from "@/components/common/deck-card"
 import { DataPagination } from "@/components/common/data-pagination"
 import { PaginationInfo } from "@/components/common/pagination-info"
-import { useMyDecks, useClonedDecks, usePublicDecks, useCreateDeck, useUpdateDeck, useDeleteDeck, useCloneDeck } from "@/queries/useDeckQuery"
+import { useMyDecks, useFeaturedDecks, useClonedDecks, usePublicDecks, useCreateDeck, useUpdateDeck, useDeleteDeck, useCloneDeck } from "@/queries/useDeckQuery"
 import { CreateDeckInput, DeckParams, DeckResponse, UpdateDeckInput } from "@/schemas/deck.schema"
 import { SortOrder, DeckSortBy } from "@/constants/sort"
 import { handleError } from "@/utils/handleError"
@@ -35,6 +35,7 @@ export default function DeckPage() {
     const [publicParams, setPublicParams] = useState<DeckParams>({ page: 1, limit: 20, sortOrder: SortOrder.DESC, sort: DeckSortBy.CREATED_AT })
     const [publicSearch, setPublicSearch] = useState("")
     const { data, isLoading } = useMyDecks(params)
+    const { data: featuredData, isLoading: featuredLoading } = useFeaturedDecks({ page: 1, limit: 8 })
     const { data: clonedData, isLoading: clonedLoading } = useClonedDecks(clonedParams)
     const { data: publicData, isLoading: publicLoading } = usePublicDecks(publicParams)
     const createMutation = useCreateDeck()
@@ -158,6 +159,8 @@ export default function DeckPage() {
     const total = meta?.total ?? 0
     const totalPages = Math.ceil(total / limit)
 
+    const featuredDecks = ((featuredData as any)?.data || []) as any[]
+
     const clonedDecks = ((clonedData as any)?.data || []) as any[]
     const clonedMeta = (clonedData as any)?.meta as { page: number; limit: number; total: number } | undefined
     const clonedPage = clonedMeta?.page ?? clonedParams.page ?? 1
@@ -251,6 +254,22 @@ export default function DeckPage() {
                 onConfirm={handleConfirmReport}
             />
 
+
+            {/* Featured decks */}
+            <div className="mt-20 space-y-6">
+                <Title title="Bộ thẻ nổi bật" />
+                {featuredLoading ? (
+                    <DeckSkeleton />
+                ) : featuredDecks.length === 0 ? (
+                    <EmptyState title="Chưa có bộ thẻ nổi bật" description="Các bộ thẻ nổi bật sẽ được admin lựa chọn và hiển thị tại đây." />
+                ) : (
+                    <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {featuredDecks.map((deck: any) => (
+                            <DeckCard key={deck.id} deck={deck} onClone={handleClone} onReport={handleReport} />
+                        ))}
+                    </div>
+                )}
+            </div>
 
             {/* Cloned decks */}
             <div className="mt-20 space-y-6">

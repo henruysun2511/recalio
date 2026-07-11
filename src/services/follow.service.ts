@@ -25,14 +25,6 @@ const followService = {
     listFollowers: (userId: string, params?: FollowParams) => {
         return http.get<ApiResponse<FollowUser[]> & { meta?: Pagination }>(`${prefix}/${userId}/followers`, { params });
     },
-
-    myFollowing: (params?: FollowParams) => {
-        return http.get<ApiResponse<FollowUser[]> & { meta?: Pagination }>(`${prefix}/following`, { params });
-    },
-
-    myFollowers: (params?: FollowParams) => {
-        return http.get<ApiResponse<FollowUser[]> & { meta?: Pagination }>(`${prefix}/followers`, { params });
-    },
 };
 
 export default followService;

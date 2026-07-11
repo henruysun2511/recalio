@@ -1,4 +1,4 @@
-import { SortOrder, ReviewSortBy } from "@/constants/sort";
+import { SortOrder } from "@/constants/sort";
 import { z } from "zod";
 
 export const reviewSchema = z.object({
@@ -21,8 +21,9 @@ export type Review = z.infer<typeof reviewSchema>;
 export const reviewParamsSchema = z.object({
     page: z.coerce.number().optional().default(1),
     limit: z.coerce.number().optional().default(20),
+    search: z.string().optional(),
     sortOrder: z.enum([SortOrder.DESC, SortOrder.ASC]).optional().default(SortOrder.DESC),
-    sortBy: z.enum([ReviewSortBy.CREATED_AT, ReviewSortBy.RATING]).optional().default(ReviewSortBy.CREATED_AT),
+    sort: z.enum(["createdAt", "updatedAt", "rating"]).optional().default("createdAt"),
 });
 
 export type ReviewParams = z.infer<typeof reviewParamsSchema>;

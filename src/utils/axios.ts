@@ -44,6 +44,11 @@ api.interceptors.response.use(
                 return Promise.reject(error);
             }
 
+            const refreshTokenValue = useAuthStore.getState().refreshToken;
+            if (!refreshTokenValue) {
+                return Promise.reject(error);
+            }
+
             originalRequest._retry = true;
 
             if (isRefreshing) {
@@ -60,8 +65,7 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const refreshTokenValue = useAuthStore.getState().refreshToken;
-                const res = await refreshApi.post("/auth/refresh-token", refreshTokenValue ? { refreshToken: refreshTokenValue } : {});
+                const res = await refreshApi.post("/auth/refresh-token", { refreshToken: refreshTokenValue });
                 const newToken = res.data.data.accessToken;
 
                 useAuthStore.getState().setAccessToken(newToken);

@@ -1,13 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import authService from "@/services/auth.service";
-import { LoginInput, RegisterInput } from "@/schemas/auth.schema";
+import { ChangePasswordInput, LoginInput, RegisterInput } from "@/schemas/auth.schema";
 import { useAuthStore } from "@/stores/useAuthStore";
 import Cookies from "js-cookie";
 import { UserRole } from "@/constants/type";
 
 export const AUTH_QUERY_KEY = ["auth"];
 const ACCESS_TOKEN_KEY = "accessToken";
+
+export const useChangePassword = () => {
+    return useMutation({
+        mutationFn: (data: ChangePasswordInput) => authService.changePassword(data),
+    });
+};
 
 export const useLogin = () => {
     const router = useRouter();

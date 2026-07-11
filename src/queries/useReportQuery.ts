@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import reportService from "@/services/report.service";
-import { CreateReportInput, ReportParams, UpdateReportStatusInput } from "@/schemas/report.schema";
+import { CreateReportInput, ReportParams } from "@/schemas/report.schema";
 
 export const REPORT_QUERY_KEY = ["reports"];
 
@@ -26,14 +26,3 @@ export const useCreateReport = () => {
     });
 };
 
-export const useUpdateReportStatus = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: UpdateReportStatusInput }) =>
-            reportService.updateStatus(id, data),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: REPORT_QUERY_KEY });
-        },
-    });
-};

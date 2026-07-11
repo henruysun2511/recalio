@@ -4,6 +4,17 @@ import { UpdateProfileInput, UpdateRoleInput, UserQuery } from "@/schemas/user.s
 
 export const USER_QUERY_KEY = ["user"];
 
+export const usePublicProfile = (username: string) => {
+    return useQuery({
+        queryKey: [...USER_QUERY_KEY, "public", username],
+        queryFn: async () => {
+            const res = await userService.getPublicProfile(username);
+            return res.data;
+        },
+        enabled: !!username,
+    });
+};
+
 export const useMyProfile = () => {
     return useQuery({
         queryKey: [...USER_QUERY_KEY, "me"],
@@ -31,6 +42,17 @@ export const useUsers = (params?: UserQuery) => {
         queryFn: async () => {
             const res = await userService.list(params);
             return res.data;
+        },
+    });
+};
+
+export const useDeleteAccount = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => userService.deleteAccount(),
+        onSuccess: () => {
+            queryClient.clear();
         },
     });
 };
