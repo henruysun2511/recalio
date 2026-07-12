@@ -1,10 +1,6 @@
 "use client"
 
-import { Brain, Flame } from "lucide-react"
-
-import { StatCard1 } from "@/components/common/stat-card"
-
-
+import { Brain, Sparkles } from "lucide-react"
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -19,55 +15,71 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold">
-                                    FlashMind
+                                    Recalio
                                 </h2>
                                 <p className="text-white/80">
-                                    Learn Smarter
+                                    Học từ vựng thông minh
                                 </p>
                             </div>
                         </div>
                     </div>
 
                     {/* HERO */}
-                    <div className="max-w-lg">
-                        <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2">
-                            <Flame size={16} />
-                            AI Powered Learning
-                        </div>
-
-                        <h1 className="text-5xl font-bold leading-tight">
-                            Remember More.
+                    <div className="max-w-lg py-10">
+                        <h1 className="text-3xl font-black tracking-tighter leading-tight text-white">
+                            Học từ vựng
                             <br />
-                            Forget Less.
+                            chưa bao giờ dễ đến thế
                         </h1>
                         <p className="mt-6 text-lg text-white/80">
-                            Master languages, programming,
-                            medicine and any subject with
-                            spaced repetition and AI-generated
-                            flashcards.
+                            Ứng dụng học từ vựng thông minh với thuật toán lặp lại ngắt quãng (SRS),
+                            hình ảnh minh hoạ và phát âm chuẩn bản ngữ.
                         </p>
-                        <div className="mt-10 grid grid-cols-3 gap-4">
-                            <StatCard1
-                                value="50K+"
-                                label="Students"
-                            />
-                            <StatCard1
-                                value="2M+"
-                                label="Cards"
-                            />
-                            <StatCard1
-                                value="94%"
-                                label="Retention"
-                            />
-                        </div>
+                        <ul className="mt-8 space-y-3">
+                            <li className="flex items-center gap-3">
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-bold">1</span>
+                                <span>Thuật toán SRS tối ưu lịch ôn tập</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-bold">2</span>
+                                <span>Hỗ trợ đa ngôn ngữ, phát âm chuẩn</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-bold">3</span>
+                                <span>Kho đề có sẵn và tự tạo bộ thẻ riêng</span>
+                            </li>
+                            <li className="flex items-center gap-3">
+                                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-bold">4</span>
+                                <span>Theo dõi tiến độ và thống kê chi tiết</span>
+                            </li>
+                        </ul>
                     </div>
 
                     {/* Illustration */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="h-32 rounded-[28px] bg-yellow-soft" />
-                        <div className="h-32 rounded-[28px] bg-green-soft" />
-                        <div className="h-32 rounded-[28px] bg-peach" />
-                        <div className="h-32 rounded-[28px] bg-white/20" />
+                    <div className="grid grid-cols-2 gap-4 mt-8">
+                        {/* Khối 1 */}
+                        <div className="h-32 rounded-[28px] bg-yellow-soft flex flex-col items-center justify-center p-4">
+                            <span className="text-2xl font-bold text-text-primary">5M+</span>
+                            <span className="text-xs text-text-muted font-medium mt-1">Thẻ Flashcard</span>
+                        </div>
+
+                        {/* Khối 2 */}
+                        <div className="h-32 rounded-[28px] bg-green-soft flex flex-col items-center justify-center p-4">
+                            <span className="text-2xl font-bold text-text-primary">50K+</span>
+                            <span className="text-xs text-text-muted font-medium mt-1">Người dùng</span>
+                        </div>
+
+                        {/* Khối 3 */}
+                        <div className="h-32 rounded-[28px] bg-peach flex flex-col items-center justify-center p-4">
+                            <span className="text-2xl font-bold text-text-primary">4.9/5</span>
+                            <span className="text-xs text-text-muted font-medium mt-1">Đánh giá</span>
+                        </div>
+
+                        {/* Khối 4 */}
+                        <div className="h-32 rounded-[28px] bg-white/20 border border-white/20 flex flex-col items-center justify-center p-4">
+                            <span className="text-2xl font-bold text-white">100+</span>
+                            <span className="text-xs text-white/80 font-medium mt-1">Bộ đề mẫu</span>
+                        </div>
                     </div>
                 </section>
 

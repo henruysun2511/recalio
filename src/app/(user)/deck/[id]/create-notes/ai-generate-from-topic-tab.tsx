@@ -55,7 +55,7 @@ export function AiGenerateFromTopicTab({ deckId }: AiGenerateFromTopicTabProps) 
 
     const { data: templatesRes } = useNoteTemplates()
     const allTemplates = ((templatesRes as any)?.data ?? []) as { id: string; name: string; type: string }[]
-    const templates = useMemo(() => allTemplates.filter((t) => t.type !== NoteTemplateType.CLOZE), [allTemplates])
+    const templates = useMemo(() => allTemplates.filter((t) => t.type !== NoteTemplateType.CLOZE && t.type !== NoteTemplateType.IMAGE_OCCLUSION), [allTemplates])
     const { data: langRes } = useSupportedLanguages()
     const languages = ((langRes as any)?.data ?? []) as { id: string; name: string; nativeName: string; flagEmoji: string }[]
     const extractMutation = useExtractFromTopic()

@@ -35,7 +35,7 @@ export interface RefreshTokenResponse {
 
 export const changePasswordSchema = z.object({
     currentPassword: z.string().min(1, "Mật khẩu hiện tại không được để trống"),
-    newPassword: z.string().min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
+    newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
     confirmPassword: z.string().min(1, "Xác nhận mật khẩu không được để trống"),
 }).refine((data) => data.newPassword === data.confirmPassword, {
     message: "Mật khẩu xác nhận không khớp",
@@ -43,6 +43,31 @@ export const changePasswordSchema = z.object({
 });
 
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
+
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("Email không hợp lệ"),
+});
+
+export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
+
+export const verifyOtpSchema = z.object({
+    email: z.string().email("Email không hợp lệ"),
+    otpCode: z.string().length(6, "Mã OTP phải có 6 chữ số"),
+});
+
+export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
+
+export const resetPasswordSchema = z.object({
+    email: z.string().email("Email không hợp lệ"),
+    otpCode: z.string().length(6, "Mã OTP phải có 6 chữ số"),
+    newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    confirmPassword: z.string().min(1, "Xác nhận mật khẩu không được để trống"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp",
+    path: ["confirmPassword"],
+});
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 
 export interface UserResponse {
     id: string;

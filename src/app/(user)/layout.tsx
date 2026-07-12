@@ -13,9 +13,7 @@ function UserLayoutInner({ children }: { children: ReactNode }) {
         <div className="h-dvh w-full min-h-0 bg-peach-light p-3 md:p-6 overflow-hidden">
             <div className="mx-auto flex w-full h-full min-h-0 flex-col md:flex-row gap-0 overflow-hidden rounded-none md:rounded-[32px] bg-cream">
                 {/* Left Sidebar */}
-                <div className="hidden md:flex h-full min-h-0 shrink-0 overflow-y-auto">
-                    <UserSidebar collapsed={collapsed} />
-                </div>
+                <UserSidebar collapsed={collapsed} />
 
                 {/* Main Content */}
                 <main className="flex h-full min-h-0 flex-1 flex-col bg-cream p-10 md:p-10  overflow-hidden">

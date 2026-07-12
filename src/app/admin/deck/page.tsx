@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/common/data-table";
-import { useAdminPublicDecks, useToggleFeatured } from "@/queries/useDeckQuery";
+import { usePublicDecks, useToggleFeatured } from "@/queries/useDeckQuery";
 import { handleError } from "@/utils/handleError";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ import { DeckResponse } from "@/schemas/deck.schema";
 
 export default function AdminDeckPage() {
     const [query, setQuery] = useState<{ page?: number; limit?: number; search?: string }>({ page: 1, limit: 20 });
-    const { data, isLoading } = useAdminPublicDecks(query);
+    const { data, isLoading } = usePublicDecks(query);
     const featureMutation = useToggleFeatured();
 
     const handleToggleFeature = async (deck: DeckResponse) => {

@@ -34,3 +34,23 @@ export const createReviewSchema = z.object({
 });
 
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;
+
+export const latestReviewSchema = z.object({
+    id: z.string().uuid(),
+    rating: z.number().int().min(1).max(5),
+    comment: z.string().nullable().optional(),
+    createdAt: z.string(),
+    user: z.object({
+        id: z.string().uuid(),
+        username: z.string(),
+        displayName: z.string(),
+        avatarUrl: z.string().nullable(),
+    }).optional(),
+    deck: z.object({
+        id: z.string().uuid(),
+        name: z.string(),
+        coverImage: z.string().nullable(),
+    }),
+});
+
+export type LatestReview = z.infer<typeof latestReviewSchema>;

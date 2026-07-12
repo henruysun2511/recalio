@@ -31,11 +31,11 @@ import { CenterContent } from "./b"
 
 export default function DashboardPage() {
     return (
-        <div className="min-h-screen bg-[#F4D8C5] p-6">
-            <div className="mx-auto flex max-w-7xl overflow-hidden rounded-[32px] bg-[#FCF6EA]">
+        <div className="min-h-screen bg-peach-light p-6">
+            <div className="mx-auto flex max-w-7xl overflow-hidden rounded-[32px] bg-cream">
 
                 {/* LEFT SIDEBAR */}
-                <aside className="w-[90px] bg-[#D97D56] py-8">
+                <aside className="w-[90px] bg-terracotta py-8">
                     <div className="flex h-full flex-col items-center justify-between">
                         <div className="space-y-8">
                             <Menu className="h-5 w-5 text-white" />
@@ -54,7 +54,7 @@ export default function DashboardPage() {
                 </aside>
 
                 {/* CENTER */}
-                <main className="flex-1 bg-[#FCF6EA] p-8">
+                <main className="flex-1 bg-cream p-8">
                     <CenterContent />
                 </main>
 
@@ -76,7 +76,7 @@ function HeroBanner() {
                 className="h-[260px] w-full object-cover"
             />
 
-            <div className="absolute bottom-0 left-0 w-full rounded-t-[24px] bg-[#D97D56] p-6 text-white">
+            <div className="absolute bottom-0 left-0 w-full rounded-t-[24px] bg-terracotta p-6 text-white">
                 <h2 className="text-3xl font-semibold">
                     Autumn Day
                 </h2>

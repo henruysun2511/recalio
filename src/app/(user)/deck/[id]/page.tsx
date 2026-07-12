@@ -12,7 +12,6 @@ import {
     Share2,
     Folder,
     CopyPlus,
-    Loader2Icon,
     Flag,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -32,10 +31,13 @@ import { useUpsertReview } from "@/queries/useReviewQuery"
 import { getColor } from "@/utils/getColor"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { handleError } from "@/utils/handleError"
+import { DeckStatCard } from "@/components/common/stat-card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { OverviewTab } from "./deck-detail-overview-tab"
 import { NotesTab } from "./deck-detail-notes-tab"
 import { CardsTab } from "./deck-detail-cards-tab"
 import { ReviewsTab } from "./deck-detail-reviews-tab"
+import { SessionsTab } from "./deck-detail-sessions-tab"
 import { SettingsTab } from "./deck-detail-settings-tab"
 import { DeckReportDialog } from "./report/deck-report-dialog"
 
@@ -53,8 +55,21 @@ export default function DeckDetailPage() {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-[50vh]">
-                <Loader2Icon className="size-8 animate-spin text-terracotta" />
+            <div className="max-w-full space-y-8 px-4 py-6 md:px-6">
+                <div className="overflow-hidden rounded-[32px] border border-beige bg-white shadow-sm">
+                    <Skeleton className="h-64 sm:h-72 md:h-80 w-full rounded-none" />
+                    <div className="p-6 md:p-8 bg-off-white">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <div key={i} className="rounded-xl bg-cream/70 p-3.5 border border-beige/40 space-y-2">
+                                    <Skeleton className="size-4" />
+                                    <Skeleton className="h-3 w-16" />
+                                    <Skeleton className="h-5 w-10" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -156,9 +171,9 @@ export default function DeckDetailPage() {
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                         {/* Grid thống kê nhanh */}
                         <div className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-                            <StatCard icon={<BookOpen className="size-4" />} label="Notes" value={String(deck._count?.notes ?? 0)} />
-                            <StatCard icon={<Layers className="size-4" />} label="Cards" value={String(deck._count?.cards ?? 0)} />
-                            <StatCard icon={<Download className="size-4" />} label="Downloads" value={String(deck.downloadCount ?? 0)} />
+                            <DeckStatCard icon={<BookOpen className="size-4" />} label="Notes" value={String(deck._count?.notes ?? 0)} />
+                            <DeckStatCard icon={<Layers className="size-4" />} label="Cards" value={String(deck._count?.cards ?? 0)} />
+                            <DeckStatCard icon={<Download className="size-4" />} label="Downloads" value={String(deck.downloadCount ?? 0)} />
                             <div className="rounded-xl bg-cream/70 p-3.5 border border-beige/40 hover:bg-cream transition-colors">
                                 <div className="mb-1.5 text-terracotta"><Star className="size-4 text-gold-dark fill-gold-dark" /></div>
                                 <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">Rating</p>
@@ -177,7 +192,7 @@ export default function DeckDetailPage() {
                                     />
                                 </div>
                             </div>
-                            <StatCard icon={<Clock className="size-4" />} label="Updated" value={timeAgo(deck.updatedAt)} />
+                            <DeckStatCard icon={<Clock className="size-4" />} label="Updated" value={timeAgo(deck.updatedAt)} />
                         </div>
 
                         {/* Nhóm Button Hành Động */}
@@ -200,6 +215,7 @@ export default function DeckDetailPage() {
                             )}
                             {isOwner ? (
                                 <Button
+                                    onClick={() => router.push(`/study/${id}`)}
                                     className="h-12 flex-1 sm:flex-initial rounded-xl bg-terracotta text-white font-bold shadow-md shadow-terracotta/20 transition-all hover:bg-terracotta-dark hover:-translate-y-0.5 active:translate-y-0 px-6"
                                 >
                                     <Play className="mr-2 size-4 fill-white" />
@@ -237,6 +253,9 @@ export default function DeckDetailPage() {
                         <TabsTrigger value="reviews" className="rounded-xl px-4 py-2.5 text-sm font-bold text-text-muted data-[state=active]:bg-cream data-[state=active]:text-terracotta">
                             Reviews
                         </TabsTrigger>
+                        <TabsTrigger value="sessions" className="rounded-xl px-4 py-2.5 text-sm font-bold text-text-muted data-[state=active]:bg-cream data-[state=active]:text-terracotta">
+                            Sessions
+                        </TabsTrigger>
                         <TabsTrigger value="settings" className="rounded-xl px-4 py-2.5 text-sm font-bold text-text-muted data-[state=active]:bg-cream data-[state=active]:text-terracotta">
                             Settings
                         </TabsTrigger>
@@ -259,6 +278,9 @@ export default function DeckDetailPage() {
                     <ReviewsTab deckId={deck.id} isOwner={isOwner} />
                 </TabsContent>
 
+                <TabsContent value="sessions" className="focus-visible:outline-none">
+                    <SessionsTab deckId={deck.id} />
+                </TabsContent>
                 <TabsContent value="settings" className="focus-visible:outline-none">
                     <SettingsTab deckId={deck.id} isOwner={isOwner} />
                 </TabsContent>
@@ -275,13 +297,5 @@ export default function DeckDetailPage() {
 }
 
 
-function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-    return (
-        <div className="rounded-xl bg-cream/70 p-3.5 border border-beige/40 hover:bg-cream transition-colors">
-            <div className="mb-1.5 text-terracotta">{icon}</div>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-text-muted">{label}</p>
-            <p className="mt-0.5 text-lg font-black text-text-primary">{value}</p>
-        </div>
-    )
-}
+// DeckStatCard moved to @/components/common/stat-card
 

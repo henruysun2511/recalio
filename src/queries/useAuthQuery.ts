@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import authService from "@/services/auth.service";
-import { ChangePasswordInput, LoginInput, RegisterInput } from "@/schemas/auth.schema";
+import { ChangePasswordInput, ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput, VerifyOtpInput } from "@/schemas/auth.schema";
 import { useAuthStore } from "@/stores/useAuthStore";
 import Cookies from "js-cookie";
 import { UserRole } from "@/constants/type";
@@ -44,6 +44,24 @@ export const useRegister = () => {
         onSuccess: () => {
             router.replace("/auth/login");
         },
+    });
+};
+
+export const useForgotPassword = () => {
+    return useMutation({
+        mutationFn: (data: ForgotPasswordInput) => authService.forgotPassword(data),
+    });
+};
+
+export const useVerifyOtp = () => {
+    return useMutation({
+        mutationFn: (data: VerifyOtpInput) => authService.verifyOtp(data),
+    });
+};
+
+export const useResetPassword = () => {
+    return useMutation({
+        mutationFn: (data: ResetPasswordInput) => authService.resetPassword(data),
     });
 };
 

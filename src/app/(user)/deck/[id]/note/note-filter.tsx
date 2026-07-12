@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/select"
 import { SearchIcon, XIcon, PlusIcon } from "lucide-react"
 import { SortOrder } from "@/constants/sort"
+import type { NoteTemplate } from "@/schemas/note-template.schema"
 
 interface NoteFilterProps {
     searchValue: string
@@ -22,9 +23,12 @@ interface NoteFilterProps {
     onSortOrderChange: (value: string) => void
     showAddButton?: boolean
     onAdd?: () => void
+    templates?: NoteTemplate[]
+    templateId?: string
+    onTemplateChange?: (value: string) => void
 }
 
-export function NoteFilter({ searchValue, onSearchChange, onSearch, onClear, sort, onSortChange, sortOrder, onSortOrderChange, showAddButton, onAdd }: NoteFilterProps) {
+export function NoteFilter({ searchValue, onSearchChange, onSearch, onClear, sort, onSortChange, sortOrder, onSortOrderChange, showAddButton, onAdd, templates, templateId, onTemplateChange }: NoteFilterProps) {
     return (
         <div className="flex flex-wrap items-center gap-3">
             <form onSubmit={onSearch} className="relative w-[280px]">
@@ -62,6 +66,20 @@ export function NoteFilter({ searchValue, onSearchChange, onSearch, onClear, sor
                     <SelectItem value={SortOrder.ASC}>Cũ nhất</SelectItem>
                 </SelectContent>
             </Select>
+
+            {templates && onTemplateChange && (
+                <Select value={templateId ?? "all"} onValueChange={(v) => onTemplateChange(v === "all" ? "" : v)}>
+                    <SelectTrigger className="w-[160px] h-10 border-gray-300 bg-white shadow-sm rounded-xl">
+                        <SelectValue placeholder="Template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="all">Tất cả</SelectItem>
+                        {templates.map((t) => (
+                            <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            )}
 
             {showAddButton && onAdd && (
                 <button

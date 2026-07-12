@@ -10,6 +10,7 @@ export interface CardPreviewData {
     example?: string
     audioUrl?: string | null
     imageUrl?: string | null
+    fields?: Record<string, string>
 }
 
 export interface CardTemplate {
@@ -34,11 +35,12 @@ function buildFieldMap(data: CardPreviewData): Record<string, string> {
         Example: data.example || "",
         Front: data.word,
         Back: data.meaning || "",
-        Text: data.word,
-        Extra: data.example || "",
+        Text: data.fields?.Text ?? data.word,
+        Extra: data.fields?.Extra ?? data.example ?? "",
         Image: data.imageUrl ? `<img src="${data.imageUrl}" class="card-image" />` : "",
         Audio: data.audioUrl ? `<button onclick="new Audio('${data.audioUrl}').play()" class="card-audio-btn">🔊 Nghe</button>` : "",
         Label: data.word,
+        ...data.fields,
     }
 }
 
@@ -49,9 +51,12 @@ function substitute(html: string, fieldMap: Record<string, string>, side: "front
     }
     result = result.replace(/{{cloze:([^}]+)}}/g, (_, field) => {
         const value = fieldMap[field.trim()] || ""
-        return side === "back"
-            ? `<span class="cloze-reveal font-bold text-terracotta">${value}</span>`
-            : `<span class="cloze">[...]</span>`
+        const processed = value.replace(/\{\{c\d+::(.*?)\}\}/g, (_m: string, content: string) =>
+            side === "back"
+                ? `<span class="cloze-reveal font-bold text-terracotta">${content}</span>`
+                : `<span class="cloze">[...]</span>`
+        )
+        return processed || value
     })
     result = result.replace(/{{type:([^}]+)}}/g, () => `<input type="text" placeholder="..." disabled />`)
     result = result.replace(/<hr id="answer"\s*\/?>/g, '<hr class="my-3 border-beige" />')

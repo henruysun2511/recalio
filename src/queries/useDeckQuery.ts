@@ -148,12 +148,3 @@ export const useToggleFeatured = () => {
     });
 };
 
-export const useAdminPublicDecks = (params?: Partial<DeckParams>) => {
-    return useQuery({
-        queryKey: [...DECK_QUERY_KEY, "admin-public", params],
-        queryFn: async () => {
-            const res = await deckService.listAdminPublic(params);
-            return res.data;
-        },
-    });
-};

@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
-import { CreateReviewInput, Review, ReviewParams } from "@/schemas/review.schema";
+import { CreateReviewInput, LatestReview, Review, ReviewParams } from "@/schemas/review.schema";
 import { Pagination } from "@/constants/pagination";
 
 const prefix = "/reviews";
@@ -12,6 +12,10 @@ const reviewService = {
 
     listByDeck: (deckId: string, params?: ReviewParams) => {
         return http.get<ApiResponse<Review[]> & { meta?: Pagination }>(`${prefix}/decks/${deckId}`, { params });
+    },
+
+    listLatest: () => {
+        return http.get<ApiResponse<LatestReview[]>>(`${prefix}/latest`);
     },
 
     delete: (id: string) => {

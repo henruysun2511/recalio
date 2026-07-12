@@ -25,6 +25,17 @@ export const useMyProfile = () => {
     });
 };
 
+export const useUserLanguages = (enabled?: boolean) => {
+    return useQuery({
+        queryKey: [...USER_QUERY_KEY, "me", "languages"],
+        queryFn: async () => {
+            const res = await userService.getLanguages();
+            return res.data;
+        },
+        enabled,
+    });
+};
+
 export const useUpdateProfile = () => {
     const queryClient = useQueryClient();
 

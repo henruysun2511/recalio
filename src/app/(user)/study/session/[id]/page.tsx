@@ -2,50 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
-import { ArrowLeft, Clock, Brain, Trophy, Loader2Icon, Eye, EyeOff } from "lucide-react"
+import { ArrowLeft, Clock, Brain, Trophy, Loader2Icon } from "lucide-react"
 import { Title } from "@/components/common/title"
 import { EmptyState } from "@/components/common/empty-state"
 import { DataPagination } from "@/components/common/data-pagination"
 import { useStudySession, useReviewLogs } from "@/queries/useStudySessionQuery"
 import { useDeck } from "@/queries/useDeckQuery"
-import { useCardsByDeck } from "@/queries/useCardQuery"
-import { STATE_BADGE } from "@/utils/mapping"
-
-import type { Card } from "@/schemas/card.schema"
-
-const RATING_LABELS: Record<string, { label: string; color: string; bg: string }> = {
-    AGAIN: { label: "Again", color: "text-red-600", bg: "bg-red-50" },
-    HARD: { label: "Hard", color: "text-orange-600", bg: "bg-orange-50" },
-    GOOD: { label: "Good", color: "text-green-600", bg: "bg-green-50" },
-    EASY: { label: "Easy", color: "text-blue-600", bg: "bg-blue-50" },
-}
-
-const STATE_LABELS: Record<string, string> = {
-    NEW: "Mới",
-    LEARNING: "Đang học",
-    REVIEW: "Ôn tập",
-    RELEARNING: "Học lại",
-    SUSPENDED: "Tạm dừng",
-}
-
-function CardPreview({ card }: { card: any }) {
-    const [flipped, setFlipped] = useState(false)
-    return (
-        <div className="rounded-2xl border border-beige bg-white overflow-hidden">
-            <div className="p-4">
-                <span className="text-[9px] font-bold uppercase tracking-wider text-text-muted">{flipped ? "Back" : "Front"}</span>
-                <div className="mt-1 min-h-[60px]" dangerouslySetInnerHTML={{ __html: flipped ? card.backHtml : card.frontHtml }} />
-                {card.css && <style>{card.css}</style>}
-            </div>
-            <button
-                onClick={() => setFlipped(!flipped)}
-                className="flex w-full items-center justify-center gap-1.5 border-t border-beige bg-cream/50 py-2 text-xs font-bold text-text-muted hover:bg-cream transition-colors"
-            >
-                {flipped ? <><EyeOff className="size-3.5" /> Front</> : <><Eye className="size-3.5" /> Back</>}
-            </button>
-        </div>
-    )
-}
+import { RATING_LABELS, STATE_LABELS } from "@/utils/mapping"
 
 export default function StudySessionDetailPage() {
     const params = useParams()
@@ -64,9 +27,6 @@ export default function StudySessionDetailPage() {
 
     const { data: deckRes } = useDeck(session?.deckId ?? "")
     const deckName = ((deckRes as any)?.data as any)?.name ?? "Không xác định"
-
-    const { data: allCardsRes } = useCardsByDeck(session?.deckId ?? "", { page: 1, limit: 500 })
-    const allCards: Card[] = ((allCardsRes as any)?.data ?? []) as Card[]
 
     const logs = ((logsRes as any)?.data ?? []) as any[]
     const meta = (logsRes as any)?.meta
@@ -190,21 +150,35 @@ export default function StudySessionDetailPage() {
                 ) : logs.length === 0 ? (
                     <EmptyState title="Chưa có dữ liệu" description="Chưa có thẻ nào được ôn trong phiên này." />
                 ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                         {logs.map((log: any) => {
                             const ratingInfo = RATING_LABELS[log.rating] ?? { label: log.rating, color: "text-gray-600", bg: "bg-gray-50" }
+                            const templateType = log.card?.note?.template?.type
+                            const word = templateType === "CLOZE"
+                                ? (log.card?.note?.fields as any)?.Text || "Cloze"
+                                : templateType === "IMAGE_OCCLUSION"
+                                    ? `Occlusion #${(log.card?.variantIndex ?? 0) + 1}`
+                                    : log.card?.note?.word || log.card?.frontHtml?.replace(/<[^>]+>/g, "")?.trim() || "—"
+                            const meaning = templateType === "CLOZE"
+                                ? (log.card?.note?.fields as any)?.Extra || "—"
+                                : templateType === "IMAGE_OCCLUSION"
+                                    ? (log.card?.note?.occlusionMasks as any[])?.map((m: any) => m.label).filter(Boolean).join(", ") || "—"
+                                    : log.card?.note?.meaning || "—"
                             return (
-                                <div key={log.id} className="rounded-2xl border border-beige bg-white p-4 shadow-sm space-y-3">
-                                    {/* Card preview */}
-                                    {log.card && <CardPreview card={log.card} />}
-                                    {/* Review info below card */}
-                                    <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-text-muted">
-                                        <span className={`inline-flex items-center gap-1 rounded-lg ${ratingInfo.bg} px-2.5 py-1 ${ratingInfo.color} font-bold`}>
-                                            {ratingInfo.label}
-                                        </span>
-                                        <span>{log.responseTimeMs ? `${(log.responseTimeMs / 1000).toFixed(1)}s` : "—"}</span>
-                                        <span>{STATE_LABELS[log.stateBefore] ?? log.stateBefore} → {STATE_LABELS[log.stateAfter] ?? log.stateAfter}</span>
+                                <div key={log.id} className="flex items-center gap-3 rounded-xl border border-beige bg-white px-4 py-3 shadow-sm">
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-sm font-bold text-text-primary truncate">{word}</p>
+                                        <p className="text-xs text-text-muted truncate">{meaning}</p>
                                     </div>
+                                    <span className={`shrink-0 rounded-md px-2 py-0.5 text-xs font-bold ${ratingInfo.color} ${ratingInfo.bg}`}>
+                                        {ratingInfo.label}
+                                    </span>
+                                    <span className="shrink-0 text-xs text-text-muted">
+                                        {log.responseTimeMs ? `${(log.responseTimeMs / 1000).toFixed(1)}s` : "—"}
+                                    </span>
+                                    <span className="shrink-0 text-xs text-text-muted">
+                                        {STATE_LABELS[log.stateBefore] ?? log.stateBefore} → {STATE_LABELS[log.stateAfter] ?? log.stateAfter}
+                                    </span>
                                 </div>
                             )
                         })}
@@ -218,34 +192,6 @@ export default function StudySessionDetailPage() {
                 )}
             </div>
 
-            {/* All deck cards */}
-            {session?.deckId && (
-                <div>
-                    <h3 className="mb-4 text-sm font-black text-text-primary tracking-tight">
-                        Tất cả thẻ trong deck ({allCards.length})
-                    </h3>
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                        {allCards.map((card) => {
-                            const badge = STATE_BADGE[card.state] ?? { label: card.state, className: "bg-gray-100 text-gray-500 border-gray-200" }
-                            return (
-                                <div key={card.id} className="rounded-2xl border border-beige bg-white p-4 shadow-sm">
-                                    <div className="flex items-start justify-between gap-2 mb-2">
-                                        <p className="text-sm font-bold text-text-primary truncate">
-                                            {card.note?.word || "—"}
-                                        </p>
-                                        <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${badge.className}`}>
-                                            {badge.label}
-                                        </span>
-                                    </div>
-                                    <div className="text-xs text-text-muted line-clamp-2">
-                                        {card.note?.meaning || "—"}
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
-            )}
         </div>
     )
 }

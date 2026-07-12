@@ -2,13 +2,21 @@ import { PartOfSpeech } from "@/constants/type";
 import { SortOrder } from "@/constants/sort";
 import { z } from "zod";
 
+export const occlusionMaskSchema = z.object({
+    x: z.number(), y: z.number(), width: z.number(), height: z.number(),
+    groupIndex: z.number().int(),
+    label: z.string().nullable().optional(),
+});
+
+export type OcclusionMask = z.infer<typeof occlusionMaskSchema>;
+
 export const noteSchema = z.object({
     id: z.string().uuid(),
     deckId: z.string().uuid(),
     templateId: z.string().uuid(),
     languageId: z.string(),
-    word: z.string(),
-    meaning: z.string(),
+    word: z.string().nullable().optional(),
+    meaning: z.string().nullable().optional(),
     ipa: z.string().nullable().optional(),
     partOfSpeech: z.nativeEnum(PartOfSpeech).nullable().optional(),
     example: z.string().nullable().optional(),
@@ -16,6 +24,8 @@ export const noteSchema = z.object({
     imageUrl: z.string().nullable().optional(),
     tags: z.array(z.string()).optional(),
     fields: z.record(z.string(), z.unknown()).optional(),
+    templateType: z.string().optional(),
+    occlusionMasks: z.array(occlusionMaskSchema).optional(),
     createdAt: z.string(),
     updatedAt: z.string(),
 });
@@ -28,6 +38,7 @@ export const noteParamsSchema = z.object({
     search: z.string().optional(),
     sort: z.enum(["createdAt", "updatedAt", "word"]).optional().default("createdAt"),
     sortOrder: z.nativeEnum(SortOrder).optional().default(SortOrder.DESC),
+    templateId: z.string().uuid().optional(),
 });
 
 export type NoteParams = z.infer<typeof noteParamsSchema>;
@@ -47,7 +58,7 @@ export const confirmNoteSchema = z.object({
     words: z.array(z.object({
         languageId: z.string().min(1, "Ngôn ngữ không được để trống"),
         templateId: z.string().uuid("Template ID không hợp lệ").optional(),
-        word: z.string().min(1, "Từ không được để trống"),
+        word: z.string().optional(),
         meaning: z.string().optional(),
         ipa: z.string().optional(),
         partOfSpeech: z.nativeEnum(PartOfSpeech).optional(),
@@ -56,6 +67,7 @@ export const confirmNoteSchema = z.object({
     imageUrl: z.string().optional().nullable(),
         tags: z.array(z.string()).optional(),
         fields: z.record(z.string(), z.any()).optional(),
+        masks: z.array(occlusionMaskSchema).optional(),
     })),
 });
 

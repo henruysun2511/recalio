@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { Title } from "@/components/common/title";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -40,13 +41,7 @@ export default function RegisterPage() {
     return (
         <div className="w-full max-w-md">
             <div className="mb-8">
-                <h2 className="text-4xl font-bold text-text-primary">
-                    Create Account
-                </h2>
-
-                <p className="mt-2 text-neutral-500">
-                    Start your learning journey.
-                </p>
+                <Title title="Tạo tài khoản" description="Bắt đầu hành trình học tập của bạn" className="text-4xl" />
             </div>
 
             <Form {...form}>
@@ -59,7 +54,7 @@ export default function RegisterPage() {
                         name="username"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Tên đăng nhập</FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder="john_doe"
@@ -96,7 +91,7 @@ export default function RegisterPage() {
                         name="displayName"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Display Name</FormLabel>
+                                <FormLabel>Tên hiển thị</FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder="John Doe"
@@ -114,7 +109,7 @@ export default function RegisterPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>Mật khẩu</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="password"
@@ -133,18 +128,18 @@ export default function RegisterPage() {
                         disabled={registerMutation.isPending}
                         className="form-btn"
                     >
-                        {registerMutation.isPending ? "Creating account..." : "Create Account"}
+                        {registerMutation.isPending ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
                     </Button>
                 </form>
             </Form>
 
             <p className="mt-8 text-center text-sm text-neutral-500">
-                Already have an account?{" "}
+                Đã có tài khoản?{" "}
                 <Link
                     href="/auth/login"
                     className="font-medium text-terracotta"
                 >
-                    Sign In
+                    Đăng nhập
                 </Link>
             </p>
         </div>

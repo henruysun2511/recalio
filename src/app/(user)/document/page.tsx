@@ -144,16 +144,16 @@ export default function DocumentPage() {
     return (
         <div className="w-full -mx-10 md:-mx-10 space-y-8">
             {/* Hero */}
-            <section className="relative overflow-hidden rounded-[32px] bg-[#F6EBDD] px-12 md:px-16 py-16 md:py-20">
+            <section className="relative overflow-hidden rounded-[32px] bg-beige px-12 md:px-16 py-16 md:py-20">
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
 
                     {/* Left */}
                     <div className="max-w-3xl">
-                        <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight text-[#2E2E2E]">
+                        <h1 className="mt-6 text-5xl font-black leading-tight tracking-tight text-text-primary">
                             Chuyển đổi tài liệu PDF
                             <br />
                             thành{" "}
-                            <span className="text-[#D97D56]">
+                            <span className="text-terracotta">
                                 ghi chú thông minh
                             </span>
                         </h1>
@@ -166,23 +166,23 @@ export default function DocumentPage() {
 
                         <div className="mt-8 flex flex-wrap gap-3">
 
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#2E2E2E]">
-                                <FileText className="size-4 text-[#D97D56]" />
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-text-primary">
+                                <FileText className="size-4 text-terracotta" />
                                 PDF tối đa 2 trang
                             </span>
 
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#2E2E2E]">
-                                <Brain className="size-4 text-[#D97D56]" />
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-text-primary">
+                                <Brain className="size-4 text-terracotta" />
                                 AI phân tích nội dung
                             </span>
 
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#2E2E2E]">
-                                <NotebookPen className="size-4 text-[#D97D56]" />
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-text-primary">
+                                <NotebookPen className="size-4 text-terracotta" />
                                 Sinh ghi chú tự động
                             </span>
 
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-[#2E2E2E]">
-                                <Pencil className="size-4 text-[#D97D56]" />
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-medium text-text-primary">
+                                <Pencil className="size-4 text-terracotta" />
                                 Chỉnh sửa trước khi lưu
                             </span>
 
@@ -192,7 +192,7 @@ export default function DocumentPage() {
                     {/* Right */}
                     <div className="w-full max-w-md rounded-[32px] border border-beige bg-white p-8 shadow-sm">
 
-                        <h3 className="text-lg font-bold text-[#2E2E2E]">
+                        <h3 className="text-lg font-bold text-text-primary">
                             Quy trình xử lý
                         </h3>
 
@@ -200,12 +200,12 @@ export default function DocumentPage() {
 
                             <div className="flex items-start gap-4">
 
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#F6EBDD] text-[#D97D56]">
+                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-beige text-terracotta">
                                     <FileText className="size-5" />
                                 </div>
 
                                 <div>
-                                    <p className="font-semibold text-[#2E2E2E]">
+                                    <p className="font-semibold text-text-primary">
                                         1. Tải lên PDF
                                     </p>
 
@@ -218,12 +218,12 @@ export default function DocumentPage() {
 
                             <div className="flex items-start gap-4">
 
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#F6EBDD] text-[#D97D56]">
+                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-beige text-terracotta">
                                     <Brain className="size-5" />
                                 </div>
 
                                 <div>
-                                    <p className="font-semibold text-[#2E2E2E]">
+                                    <p className="font-semibold text-text-primary">
                                         2. AI phân tích
                                     </p>
 
@@ -237,12 +237,12 @@ export default function DocumentPage() {
 
                             <div className="flex items-start gap-4">
 
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#F6EBDD] text-[#D97D56]">
+                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-beige text-terracotta">
                                     <NotebookPen className="size-5" />
                                 </div>
 
                                 <div>
-                                    <p className="font-semibold text-[#2E2E2E]">
+                                    <p className="font-semibold text-text-primary">
                                         3. Sinh ghi chú
                                     </p>
 

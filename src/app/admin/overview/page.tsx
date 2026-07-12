@@ -6,16 +6,7 @@ import { OverviewStatCard } from "./overview-stat-card";
 import { OverviewChart } from "./overview-chart";
 import { useDashboard } from "@/queries/useAdminQuery";
 import { Skeleton } from "@/components/ui/skeleton";
-
-function timeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins} phút trước`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} giờ trước`;
-    const days = Math.floor(hours / 24);
-    return `${days} ngày trước`;
-}
+import { timeAgo } from "@/utils/timeAgo";
 
 export default function AdminOverviewPage() {
     const { data, isLoading } = useDashboard();

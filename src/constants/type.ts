@@ -18,6 +18,7 @@ export enum NoteTemplateType {
     BASIC = "BASIC",
     BASIC_REVERSED = "BASIC_REVERSED",
     CLOZE = "CLOZE",
+    IMAGE_OCCLUSION = "IMAGE_OCCLUSION",
 }
 
 export enum PartOfSpeech {

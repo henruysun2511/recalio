@@ -1,6 +1,6 @@
 "use client"
 
-import { PanelLeft, PanelLeftClose } from "lucide-react"
+import { PanelLeft } from "lucide-react"
 import { useSidebar } from "@/components/ui/sidebar"
 import { useAuthStore } from "@/stores/useAuthStore"
 import { UserAvatar } from "@/components/common/user-avatar"
@@ -15,9 +15,8 @@ const roleLabels: Record<string, string> = {
 }
 
 export function UserHeader() {
-    const { state, toggleSidebar } = useSidebar()
+    const { toggleSidebar } = useSidebar()
     const user = useAuthStore((s) => s.user)
-    const collapsed = state === "collapsed"
     const displayName = user?.displayName || user?.username || "User"
     const role = user?.role || UserRole.USER
 
@@ -25,9 +24,9 @@ export function UserHeader() {
         <header className="flex items-center justify-between shrink-0">
             <button
                 onClick={toggleSidebar}
-                className="hidden md:flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground transition-all hover:bg-beige hover:text-text-primary"
+                className="flex h-9 w-9 items-center justify-center rounded-xl text-muted-foreground transition-all hover:bg-beige hover:text-text-primary"
             >
-                {collapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
+                <PanelLeft size={18} />
             </button>
 
             <div className="flex items-center gap-4 mr-5">

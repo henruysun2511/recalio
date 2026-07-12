@@ -15,23 +15,13 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { createNotificationSchema } from "@/schemas/notification.schema";
 import { useCreateNotification } from "@/queries/useNotificationQuery";
-import { NotificationType, NotificationChannel } from "@/constants/type";
 import { handleError } from "@/utils/handleError";
+import { NOTIFICATION_TYPE_OPTIONS, NOTIFICATION_CHANNEL_OPTIONS } from "@/utils/notification-mapping";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send, Bell } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-
-const NOTIFICATION_TYPES = Object.entries(NotificationType).map(([key, value]) => ({
-    value,
-    label: key.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
-}));
-
-const NOTIFICATION_CHANNELS = Object.entries(NotificationChannel).map(([key, value]) => ({
-    value,
-    label: key === "WEB_PUSH" ? "Web Push" : key === "MOBILE_PUSH" ? "Mobile Push" : key,
-}));
 
 type FormData = z.infer<typeof createNotificationSchema>;
 
@@ -136,7 +126,7 @@ export default function AdminNotificationPage() {
                                                         <SelectValue placeholder="Mặc định (SYSTEM)" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {NOTIFICATION_TYPES.map((t) => (
+                                                        {NOTIFICATION_TYPE_OPTIONS.map((t) => (
                                                             <SelectItem key={t.value} value={t.value}>
                                                                 {t.label}
                                                             </SelectItem>
@@ -161,7 +151,7 @@ export default function AdminNotificationPage() {
                                                         <SelectValue placeholder="Mặc định (WEB_PUSH)" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        {NOTIFICATION_CHANNELS.map((c) => (
+                                                        {NOTIFICATION_CHANNEL_OPTIONS.map((c) => (
                                                             <SelectItem key={c.value} value={c.value}>
                                                                 {c.label}
                                                             </SelectItem>

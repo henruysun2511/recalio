@@ -8,9 +8,9 @@ export function HolidayItem({
     price,
 }: HolidayItemProps) {
     return (
-        <div className="flex items-center justify-between rounded-[20px] bg-[#FAFAFA] p-4">
+        <div className="flex items-center justify-between rounded-[20px] bg-near-white p-4">
             <div>
-                <h5 className="font-medium text-[#2E2E2E]">
+                <h5 className="font-medium text-text-primary">
                     {title}
                 </h5>
 
@@ -19,7 +19,7 @@ export function HolidayItem({
                 </p>
             </div>
 
-            <button className="rounded-full bg-[#D97D56] px-4 py-2 text-sm text-white transition hover:bg-[#C96A42]">
+            <button className="rounded-full bg-terracotta px-4 py-2 text-sm text-white transition hover:bg-terracotta-dark">
                 View
             </button>
         </div>

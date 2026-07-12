@@ -17,7 +17,7 @@ export function ScheduleCard({
                 />
             </div>
 
-            <h4 className="mt-3 font-medium text-[#2E2E2E]">
+            <h4 className="mt-3 font-medium text-text-primary">
                 {title}
             </h4>
 

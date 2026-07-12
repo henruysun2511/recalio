@@ -61,6 +61,20 @@ export interface UserQuery {
     sortOrder?: "asc" | "desc";
 }
 
+export interface UserLanguage {
+    id: string;
+    userId: string;
+    languageId: string;
+    isActive: boolean;
+    startedAt: string;
+    language: {
+        id: string;
+        name: string;
+        nativeName: string;
+        flagEmoji: string;
+    };
+}
+
 export interface UserListResponse {
     users: UserProfile[];
     total: number;

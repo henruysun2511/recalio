@@ -57,10 +57,6 @@ const deckService = {
     toggleFeatured: (id: string) => {
         return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/feature`);
     },
-
-    listAdminPublic: (params?: Partial<DeckParams>) => {
-        return http.get<ApiResponse<DeckResponse[]> & { meta?: Pagination }>(`${prefix}/admin/public`, { params });
-    },
 };
 
 export default deckService;

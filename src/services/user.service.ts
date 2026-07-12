@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
-import { UpdateProfileInput, UserProfile, PublicProfile, UserQuery, UserListResponse, UpdateRoleInput } from "@/schemas/user.schema";
+import { UpdateProfileInput, UserProfile, PublicProfile, UserQuery, UserListResponse, UpdateRoleInput, UserLanguage } from "@/schemas/user.schema";
 
 const prefix = "/users";
 
@@ -31,6 +31,10 @@ const userService = {
 
     deleteAccount: () => {
         return http.delete<ApiResponse<null>>(`${prefix}/me`);
+    },
+
+    getLanguages: () => {
+        return http.get<ApiResponse<UserLanguage[]>>(`${prefix}/me/languages`);
     },
 };
 

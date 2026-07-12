@@ -56,7 +56,7 @@ export default function HomePage() {
       <section className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid gap-10 lg:grid-cols-2">
           <div className="flex flex-col justify-center">
-            <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border-4 border-black bg-[#D6C2FF] px-4 py-2 font-bold">
+            <div className="mb-6 inline-flex w-fit items-center gap-2 rounded-full border-4 border-black bg-purple-soft px-4 py-2 font-bold">
               <Sparkles className="h-4 w-4" />
               Powered by AI + FSRS
             </div>
@@ -75,7 +75,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Button
                 size="lg"
-                className="rounded-2xl border-4 border-black bg-[#FFE27A] font-bold text-black shadow-[6px_6px_0px_#000] hover:bg-[#ffd84d]"
+                className="rounded-2xl border-4 border-black bg-gold font-bold text-black shadow-[6px_6px_0px_#000] hover:bg-gold-dark"
               >
                 Start Learning
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -98,11 +98,11 @@ export default function HomePage() {
                 🔥 7 Day Streak
               </div>
 
-              <div className="absolute -right-6 top-0 rounded-3xl border-4 border-black bg-[#FFB7D5] px-4 py-3 font-bold shadow-[6px_6px_0px_#000]">
+              <div className="absolute -right-6 top-0 rounded-3xl border-4 border-black bg-pink-soft px-4 py-3 font-bold shadow-[6px_6px_0px_#000]">
                 ⭐ +250 XP
               </div>
 
-              <div className="rounded-[40px] border-4 border-black bg-[#A7D8FF] p-12 shadow-[12px_12px_0px_#000]">
+              <div className="rounded-[40px] border-4 border-black bg-blue-soft p-12 shadow-[12px_12px_0px_#000]">
                 <div className="text-[180px]">🤖</div>
               </div>
             </div>
@@ -113,7 +113,7 @@ export default function HomePage() {
       {/* STATS */}
       <section className="mx-auto max-w-7xl px-6">
         <div className="grid gap-6 md:grid-cols-3">
-          <Card className="rounded-[32px] border-4 border-black bg-[#FFE27A] shadow-[8px_8px_0px_#000]">
+          <Card className="rounded-[32px] border-4 border-black bg-gold shadow-[8px_8px_0px_#000]">
             <CardContent className="p-6">
               <div className="text-5xl">📚</div>
               <h3 className="mt-4 text-4xl font-black">1M+</h3>
@@ -121,7 +121,7 @@ export default function HomePage() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[32px] border-4 border-black bg-[#FFB7D5] shadow-[8px_8px_0px_#000]">
+          <Card className="rounded-[32px] border-4 border-black bg-pink-soft shadow-[8px_8px_0px_#000]">
             <CardContent className="p-6">
               <div className="text-5xl">🔥</div>
               <h3 className="mt-4 text-4xl font-black">95%</h3>
@@ -176,7 +176,7 @@ export default function HomePage() {
 
       {/* AI SECTION */}
       <section id="ai" className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="rounded-[40px] border-4 border-black bg-[#D6C2FF] p-10 shadow-[10px_10px_0px_#000]">
+        <div className="rounded-[40px] border-4 border-black bg-purple-soft p-10 shadow-[10px_10px_0px_#000]">
           <div className="grid gap-10 lg:grid-cols-2">
             <div>
               <h2 className="text-5xl font-black">AI Card Generator</h2>
@@ -196,11 +196,11 @@ export default function HomePage() {
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
-                <span className="rounded-xl border-2 border-black bg-[#FFE27A] px-3 py-2 font-bold">
+                <span className="rounded-xl border-2 border-black bg-gold px-3 py-2 font-bold">
                   climate
                 </span>
 
-                <span className="rounded-xl border-2 border-black bg-[#A7D8FF] px-3 py-2 font-bold">
+                <span className="rounded-xl border-2 border-black bg-blue-soft px-3 py-2 font-bold">
                   pressing
                 </span>
 
@@ -233,7 +233,7 @@ export default function HomePage() {
                   4.9
                 </div>
 
-                <Button className="mt-6 w-full border-4 border-black bg-[#FFE27A] font-bold text-black hover:bg-[#ffd84d]">
+                <Button className="mt-6 w-full border-4 border-black bg-gold font-bold text-black hover:bg-gold-dark">
                   Download
                 </Button>
               </CardContent>
@@ -244,7 +244,7 @@ export default function HomePage() {
 
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="rounded-[40px] border-4 border-black bg-[#FFE27A] p-12 text-center shadow-[12px_12px_0px_#000]">
+        <div className="rounded-[40px] border-4 border-black bg-gold p-12 text-center shadow-[12px_12px_0px_#000]">
           <Flame className="mx-auto h-12 w-12 fill-current text-black" />
 
           <h2 className="mt-6 text-5xl font-black">Ready To Master Anything?</h2>

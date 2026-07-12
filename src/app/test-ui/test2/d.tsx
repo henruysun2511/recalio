@@ -27,7 +27,7 @@ export function ProfileSidebar() {
                 />
 
                 <div>
-                    <h3 className="font-semibold text-[#2E2E2E]">
+                    <h3 className="font-semibold text-text-primary">
                         Jack
                     </h3>
 

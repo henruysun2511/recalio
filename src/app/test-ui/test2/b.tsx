@@ -15,7 +15,7 @@ export function CenterContent() {
             <HeroBanner />
 
             <div className="mt-8">
-                <h3 className="mb-5 text-lg font-semibold text-[#2E2E2E]">
+                <h3 className="mb-5 text-lg font-semibold text-text-primary">
                     Day Schedule
                 </h3>
 

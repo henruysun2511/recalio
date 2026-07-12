@@ -4,11 +4,13 @@ import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { ArrowLeft, Loader2, CheckCircle2, EyeOff, Ban, Check, X as XIcon } from "lucide-react"
 import { useDueCards, useCardsByDeck } from "@/queries/useCardQuery"
-import { useCreateSession, useEndSession, useReviewLogs } from "@/queries/useStudySessionQuery"
+import { useCreateSession, useEndSession } from "@/queries/useStudySessionQuery"
 import { useReviewCard, useSuspendCard, useBuryCard } from "@/queries/useCardQuery"
 import { useDeck } from "@/queries/useDeckQuery"
 import { ReviewRating } from "@/constants/type"
 import { handleError } from "@/utils/handleError"
+import { STATE_BADGE } from "@/utils/mapping"
+import { ImageOcclusionCardView } from "@/app/(user)/deck/[id]/create-notes/image-occlusion-card-view"
 import type { ReviewCardInput } from "@/schemas/card.schema"
 
 type Phase = "loading" | "studying" | "done"
@@ -61,8 +63,23 @@ function processBackHtml(html: string, fieldMap: Record<string, string>): string
 
 function CardPreview({ card, compact }: { card: any; compact?: boolean }) {
     const [showBack, setShowBack] = useState(false)
+    const isOcclusion = !!card?.occlusion
     const fieldMap = useMemo(() => buildFieldMap(card), [card])
     const backHtml = useMemo(() => processBackHtml(card?.backHtml ?? "", fieldMap), [card, fieldMap])
+
+    if (isOcclusion) {
+        return (
+            <div onClick={() => setShowBack((v) => !v)} className="cursor-pointer rounded-xl border border-beige bg-white p-3 shadow-sm hover:shadow-md">
+                <ImageOcclusionCardView
+                    imageUrl={card.occlusion.imageUrl}
+                    masks={card.occlusion.masks}
+                    variantIndex={card.variantIndex}
+                    showBack={showBack}
+                />
+            </div>
+        )
+    }
+
     return (
         <div
             onClick={() => setShowBack((v) => !v)}
@@ -86,13 +103,6 @@ function CardPreview({ card, compact }: { card: any; compact?: boolean }) {
     )
 }
 
-const RATING_BADGES: Record<string, { label: string; color: string }> = {
-    AGAIN: { label: "Again", color: "bg-red-100 text-red-700" },
-    HARD: { label: "Hard", color: "bg-orange-100 text-orange-700" },
-    GOOD: { label: "Good", color: "bg-green-100 text-green-700" },
-    EASY: { label: "Easy", color: "bg-blue-100 text-blue-700" },
-}
-
 export default function StudySessionPage() {
     const { deckId } = useParams<{ deckId: string }>()
     const router = useRouter()
@@ -107,9 +117,7 @@ export default function StudySessionPage() {
 
     const [allCards, setAllCards] = useState<any[]>([])
     const [sessionId, setSessionId] = useState<string | null>(null)
-    const [completedSessionId, setCompletedSessionId] = useState<string | null>(null)
-    const { data: logsData, isLoading: logsLoading } = useReviewLogs(completedSessionId ?? "")
-    const { data: allDeckCardsData } = useCardsByDeck(deckId, { page: 1, limit: 200 })
+    const { data: allDeckCardsData } = useCardsByDeck(deckId, { page: 1, limit: 50 })
     const deckCards = (allDeckCardsData as any)?.data ?? []
     const [phase, setPhase] = useState<Phase>("loading")
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -159,7 +167,7 @@ export default function StudySessionPage() {
             startTimeRef.current = performance.now()
             startSession().then(() => setPhase("studying"))
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardsLoading, cardsRes])
 
     const handleFlip = () => {
@@ -199,7 +207,6 @@ export default function StudySessionPage() {
             if (isLastCard) {
                 if (sessionIdRef.current) {
                     await endSession.mutateAsync(sessionIdRef.current)
-                    setCompletedSessionId(sessionIdRef.current)
                 }
                 setPhase("done")
             } else {
@@ -228,7 +235,6 @@ export default function StudySessionPage() {
             if (isLastCard) {
                 if (sessionIdRef.current) {
                     await endSession.mutateAsync(sessionIdRef.current)
-                    setCompletedSessionId(sessionIdRef.current)
                 }
                 setPhase("done")
             } else {
@@ -256,19 +262,17 @@ export default function StudySessionPage() {
     if (phase === "done") {
         const total = stats.reviewed
         const accuracy = total > 0 ? Math.round(((stats.good + stats.easy) / total) * 100) : 0
-        const logs = (logsData as any)?.data ?? []
         return (
             <div className="space-y-6">
                 <button onClick={() => router.push("/study")} className="flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-primary">
                     <ArrowLeft className="size-4" /> Quay lại
                 </button>
-
-                {/* Completion header */}
-                <div className="flex flex-col items-center justify-center rounded-3xl border border-beige bg-white py-12 px-6 text-center shadow-sm">
-                    <CheckCircle2 className="size-14 text-green-500 mb-3" />
+                <div className="flex flex-col items-center justify-center rounded-3xl border border-beige bg-white py-16 px-6 text-center shadow-sm">
+                    <CheckCircle2 className="size-16 text-green-500 mb-4" />
                     <h2 className="text-2xl font-black text-text-primary">Hoàn thành!</h2>
                     <p className="mt-1 text-text-muted">Bạn đã ôn tập xong bộ thẻ này</p>
-                    <div className="mt-6 grid grid-cols-2 gap-4 w-full max-w-sm">
+
+                    <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-sm">
                         <div className="rounded-2xl border border-beige bg-cream p-4">
                             <p className="text-xs font-medium text-text-muted">Đã ôn</p>
                             <p className="text-2xl font-black text-text-primary">{total}</p>
@@ -278,55 +282,21 @@ export default function StudySessionPage() {
                             <p className="text-2xl font-black text-green-600">{accuracy}%</p>
                         </div>
                     </div>
-                </div>
 
-                {/* Review logs — card preview + rating annotation */}
-                {completedSessionId && (
-                    <div>
-                        <h3 className="mb-4 text-sm font-black text-text-primary tracking-tight">
-                            Chi tiết ôn tập
-                        </h3>
-                        {logsLoading ? (
-                            <div className="flex items-center justify-center py-12">
-                                <Loader2 className="size-6 animate-spin text-terracotta" />
-                            </div>
-                        ) : logs.length === 0 ? (
-                            <p className="text-sm text-text-muted text-center py-8">Chưa có dữ liệu ôn tập.</p>
-                        ) : (
-                            <div className="space-y-4">
-                                {logs.map((log: any) => {
-                                    const badge = RATING_BADGES[log.rating] ?? { label: log.rating, color: "bg-gray-100 text-gray-700" }
-                                    return (
-                                        <div key={log.id} className="rounded-2xl border border-beige bg-white p-4 shadow-sm space-y-3">
-                                            <CardPreview card={log.card} />
-                                            <div className="flex items-center gap-2">
-                                                <span className={`rounded-md px-2 py-0.5 text-xs font-bold ${badge.color}`}>{badge.label}</span>
-                                                {log.responseTimeMs != null && (
-                                                    <span className="text-xs text-text-muted">{log.responseTimeMs}ms</span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )}
+                    <div className="mt-6 flex gap-3">
+                        <button
+                            onClick={() => router.push(sessionIdRef.current ? `/study/session/${sessionIdRef.current}` : "/study")}
+                            className="rounded-xl bg-terracotta px-6 py-3 text-sm font-semibold text-white hover:bg-terracotta-dark"
+                        >
+                            Xem chi tiết
+                        </button>
+                        <button
+                            onClick={() => router.push("/study")}
+                            className="rounded-xl border border-beige bg-white px-6 py-3 text-sm font-semibold text-text-primary hover:bg-cream"
+                        >
+                            Danh sách
+                        </button>
                     </div>
-                )}
-
-                {/* All deck cards */}
-                <div>
-                    <h3 className="mb-4 text-sm font-black text-text-primary tracking-tight">
-                        Tất cả thẻ trong deck ({deckCards.length})
-                    </h3>
-                    {deckCards.length === 0 ? (
-                        <p className="text-sm text-text-muted text-center py-8">Chưa có thẻ nào.</p>
-                    ) : (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                            {deckCards.map((card: any) => (
-                                <CardPreview key={card.id} card={card} compact />
-                            ))}
-                        </div>
-                    )}
                 </div>
             </div>
         )
@@ -334,6 +304,51 @@ export default function StudySessionPage() {
 
     return (
         <div className="mx-auto max-w-2xl space-y-6">
+            <style>{`
+                .cloze {
+                    font-weight: 800;
+                    color: #92400e;
+                    background: rgba(251,191,36,0.15);
+                    padding: 2px 8px;
+                    border-radius: 6px;
+                    border: 1.5px solid rgba(251,191,36,0.3);
+                    font-size: 0.9em;
+                }
+                .cloze-reveal {
+                    font-weight: 800;
+                    color: #166534;
+                    background: rgba(34,197,94,0.12);
+                    padding: 2px 8px;
+                    border-radius: 6px;
+                    border: 1.5px solid rgba(34,197,94,0.3);
+                    font-size: 0.9em;
+                }
+                .card-audio-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 14px;
+                    border-radius: 10px;
+                    background: rgba(201, 106, 66, 0.1);
+                    color: var(--terracotta-dark);
+                    font-weight: 700;
+                    font-size: 13px;
+                    border: none;
+                    cursor: pointer;
+                    transition: all 0.15s;
+                }
+                .card-audio-btn:hover {
+                    background: var(--terracotta-dark);
+                    color: white;
+                }
+                .card-image {
+                    max-height: 180px;
+                    border-radius: 12px;
+                    object-fit: cover;
+                    margin: 8px auto;
+                    display: block;
+                }
+            `}</style>
             <div className="flex items-center justify-between">
                 <button onClick={() => router.push("/study")} className="flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-primary">
                     <ArrowLeft className="size-4" /> {deck?.name || "Học tập"}
@@ -356,23 +371,40 @@ export default function StudySessionPage() {
             >
                 <div className={`relative w-full min-h-[280px] transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}>
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 [backface-visibility:hidden]">
-                        <div
-                            className="w-full text-center [&_img]:max-h-48 [&_img]:rounded-xl [&_img]:object-cover"
-                            dangerouslySetInnerHTML={{ __html: currentCard?.frontHtml || "" }}
-                        />
+                        {currentCard?.occlusion ? (
+                            <ImageOcclusionCardView
+                                imageUrl={currentCard.occlusion.imageUrl}
+                                masks={currentCard.occlusion.masks}
+                                variantIndex={currentCard.variantIndex}
+                                showBack={false}
+                            />
+                        ) : (
+                            <div
+                                className="w-full text-center [&_img]:max-h-48 [&_img]:rounded-xl [&_img]:object-cover"
+                                dangerouslySetInnerHTML={{ __html: currentCard?.frontHtml || "" }}
+                            />
+                        )}
                         <style>{currentCard?.css}</style>
                         <p className="mt-6 text-xs font-medium text-text-muted">Chạm để lật thẻ</p>
                     </div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                        <div
-                            className="w-full text-center [&_img]:max-h-48 [&_img]:rounded-xl [&_img]:object-cover"
-                            dangerouslySetInnerHTML={{ __html: processedBackHtml }}
-                        />
+                        {currentCard?.occlusion ? (
+                            <ImageOcclusionCardView
+                                imageUrl={currentCard.occlusion.imageUrl}
+                                masks={currentCard.occlusion.masks}
+                                variantIndex={currentCard.variantIndex}
+                                showBack={true}
+                            />
+                        ) : (
+                            <div
+                                className="w-full text-center [&_img]:max-h-48 [&_img]:rounded-xl [&_img]:object-cover"
+                                dangerouslySetInnerHTML={{ __html: processedBackHtml }}
+                            />
+                        )}
                         <style>{currentCard?.css}</style>
                         {isTypeAnswer && answerResult && (
-                            <div className={`mt-4 flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold ${
-                                answerResult.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                            }`}>
+                            <div className={`mt-4 flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold ${answerResult.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                                }`}>
                                 {answerResult.correct ? (
                                     <><Check className="size-4" /> Chính xác!</>
                                 ) : (
@@ -425,24 +457,21 @@ export default function StudySessionPage() {
                         </button>
                     </div>
                     <div className="grid grid-cols-4 gap-3">
-                    {ratingConfig.map((cfg) => (
-                        <button
-                            key={cfg.rating}
-                            onClick={() => handleRating(cfg.rating)}
-                            disabled={submitting}
-                            className={`rounded-xl py-2.5 text-sm font-bold text-white transition disabled:opacity-50 ${cfg.color}`}
-                        >
-                            {submitting ? (
-                                <Loader2 className="mx-auto size-5 animate-spin" />
-                            ) : (
-                                <>
+                        {ratingConfig.map((cfg) => (
+                            <button
+                                key={cfg.rating}
+                                onClick={() => handleRating(cfg.rating)}
+                                disabled={submitting}
+                                className={`rounded-xl py-2.5 text-sm font-bold text-white transition disabled:opacity-50 ${cfg.color}`}
+                            >
+                                {submitting ? (
+                                    <Loader2 className="mx-auto size-5 animate-spin" />
+                                ) : (
                                     <span className="block">{cfg.label}</span>
-                                    <span className="block text-[10px] font-normal opacity-80">{cfg.sub}</span>
-                                </>
-                            )}
-                        </button>
-                    ))}
-                </div>
+                                )}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
 
@@ -462,19 +491,32 @@ export default function StudySessionPage() {
                 </p>
             )}
 
-            {/* All deck cards reference */}
+            {/* Rating legend */}
+            <div className="flex items-center justify-center gap-4 text-xs font-medium text-text-muted pt-4 border-t border-beige">
+                <span className="flex items-center gap-1"><span className="size-2.5 rounded bg-red-500" /> Again: Quên</span>
+                <span className="flex items-center gap-1"><span className="size-2.5 rounded bg-orange-500" /> Hard: Khó</span>
+                <span className="flex items-center gap-1"><span className="size-2.5 rounded bg-green-500" /> Good: Bình thường</span>
+                <span className="flex items-center gap-1"><span className="size-2.5 rounded bg-blue-500" /> Easy: Rất dễ</span>
+            </div>
+
+            {/* All deck cards */}
             <div className="pt-4 border-t border-beige">
-                <details className="group">
-                    <summary className="cursor-pointer text-sm font-bold text-text-primary tracking-tight list-none flex items-center gap-2">
-                        <span>Tất cả thẻ trong deck</span>
-                        <span className="text-xs font-normal text-text-muted">({deckCards.length})</span>
-                    </summary>
-                    <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                        {deckCards.map((card: any) => (
-                            <CardPreview key={card.id} card={card} compact />
-                        ))}
-                    </div>
-                </details>
+                <h3 className="text-sm font-bold text-text-primary tracking-tight mb-3">
+                    Tất cả thẻ trong deck ({deckCards.length})
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {deckCards.map((card: any) => {
+                        const badge = STATE_BADGE[card.state] ?? { label: card.state, className: "bg-gray-100 text-gray-500" }
+                        return (
+                            <div key={card.id} className="relative">
+                                <CardPreview card={card} compact />
+                                <span className={`absolute top-1.5 right-1.5 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${badge.className}`}>
+                                    {badge.label}
+                                </span>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )

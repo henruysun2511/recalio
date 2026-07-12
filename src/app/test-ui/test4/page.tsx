@@ -12,21 +12,21 @@ import {
 
 export default function HomePage() {
     return (
-        <main className="min-h-screen bg-[#F4D8C5]  lg:p-8">
-            <div className=" flex min-h-[calc(100vh-2rem)]  overflow-hidden rounded-[32px] bg-[#FCF6EA]">
+        <main className="min-h-screen bg-peach-light  lg:p-8">
+            <div className=" flex min-h-[calc(100vh-2rem)]  overflow-hidden rounded-[32px] bg-cream">
 
                 {/* ================= SIDEBAR ================= */}
 
-                <aside className="bg-[#D97D56] hidden w-[260px] border-r border-[#EFE4D5] lg:flex lg:flex-col lg:justify-between p-6">
+                <aside className="bg-terracotta hidden w-[260px] border-r border-[#EFE4D5] lg:flex lg:flex-col lg:justify-between p-6">
 
                     <div>
                         <div className="mb-10 flex items-center gap-3">
-                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D97D56] text-white">
+                            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-terracotta text-white">
                                 <Brain size={24} />
                             </div>
 
                             <div>
-                                <h2 className="font-bold text-[#2E2E2E]">
+                                <h2 className="font-bold text-text-primary">
                                     FlashMind
                                 </h2>
 
@@ -73,10 +73,10 @@ export default function HomePage() {
 
                     <div className="rounded-[24px] bg-white p-4">
                         <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 rounded-xl bg-[#D97D56]" />
+                            <div className="h-12 w-12 rounded-xl bg-terracotta" />
 
                             <div>
-                                <h4 className="font-medium text-[#2E2E2E]">
+                                <h4 className="font-medium text-text-primary">
                                     Jack
                                 </h4>
 
@@ -97,23 +97,23 @@ export default function HomePage() {
                     <header className="flex items-center justify-between px-6 py-6 lg:px-10">
 
                         <div className="lg:hidden flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#D97D56] text-white">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-terracotta text-white">
                                 <Brain size={20} />
                             </div>
 
-                            <span className="font-bold text-[#2E2E2E]">
+                            <span className="font-bold text-text-primary">
                                 FlashMind
                             </span>
                         </div>
 
-                        <div className="hidden md:flex items-center gap-8 text-[#2E2E2E]">
+                        <div className="hidden md:flex items-center gap-8 text-text-primary">
                             <a href="#">Features</a>
                             <a href="#">Pricing</a>
                             <a href="#">Community</a>
                             <a href="#">Blog</a>
                         </div>
 
-                        <button className="rounded-full bg-[#D97D56] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#C96A42]">
+                        <button className="rounded-full bg-terracotta px-5 py-3 text-sm font-medium text-white transition hover:bg-terracotta-dark">
                             Sign In
                         </button>
                     </header>
@@ -121,16 +121,16 @@ export default function HomePage() {
                     {/* HERO */}
 
                     <section className="px-6 lg:px-10">
-                        <div className="relative overflow-hidden rounded-[32px] bg-[#F6EBDD] p-8 lg:p-12">
+                        <div className="relative overflow-hidden rounded-[32px] bg-beige p-8 lg:p-12">
 
                             <div className="max-w-2xl">
 
-                                <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-[#2E2E2E]">
+                                <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-text-primary">
                                     <Flame size={16} />
                                     AI-powered spaced repetition
                                 </div>
 
-                                <h1 className="mt-6 text-4xl font-bold leading-tight text-[#2E2E2E] lg:text-6xl">
+                                <h1 className="mt-6 text-4xl font-bold leading-tight text-text-primary lg:text-6xl">
                                     Remember More.
                                     <br />
                                     Forget Less.
@@ -144,11 +144,11 @@ export default function HomePage() {
                                 </p>
 
                                 <div className="mt-8 flex flex-wrap gap-4">
-                                    <button className="rounded-full bg-[#D97D56] px-8 py-4 font-medium text-white transition hover:bg-[#C96A42]">
+                                    <button className="rounded-full bg-terracotta px-8 py-4 font-medium text-white transition hover:bg-terracotta-dark">
                                         Start Learning
                                     </button>
 
-                                    <button className="rounded-full bg-white px-8 py-4 font-medium text-[#2E2E2E]">
+                                    <button className="rounded-full bg-white px-8 py-4 font-medium text-text-primary">
                                         Browse Decks
                                     </button>
                                 </div>
@@ -158,14 +158,14 @@ export default function HomePage() {
 
                             <div className="absolute right-10 top-10 hidden xl:block">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="h-32 w-32 rounded-[28px] bg-[#F8E4B5]" />
-                                    <div className="h-32 w-32 rounded-[28px] bg-[#DCE9D8]" />
-                                    <div className="h-32 w-32 rounded-[28px] bg-[#F4D6C8]" />
+                                    <div className="h-32 w-32 rounded-[28px] bg-yellow-soft" />
+                                    <div className="h-32 w-32 rounded-[28px] bg-green-soft" />
+                                    <div className="h-32 w-32 rounded-[28px] bg-peach" />
                                     <div className="h-32 w-32 rounded-[28px] bg-white" />
                                 </div>
                             </div>
 
-                            <div className="absolute bottom-6 left-6 rounded-[24px] bg-[#D97D56] px-6 py-4 text-white">
+                            <div className="absolute bottom-6 left-6 rounded-[24px] bg-terracotta px-6 py-4 text-white">
                                 <h3 className="text-xl font-semibold">
                                     Daily Review
                                 </h3>
@@ -207,11 +207,11 @@ export default function HomePage() {
                     <section className="px-6 pb-10 lg:px-10">
                         <div className="mb-6 flex items-center justify-between">
 
-                            <h2 className="text-3xl font-bold text-[#2E2E2E]">
+                            <h2 className="text-3xl font-bold text-text-primary">
                                 Popular Decks
                             </h2>
 
-                            <button className="flex items-center gap-2 text-[#D97D56]">
+                            <button className="flex items-center gap-2 text-terracotta">
                                 View All
                                 <ArrowRight size={18} />
                             </button>
@@ -249,7 +249,7 @@ export default function HomePage() {
 
                     <section className="px-6 py-8 lg:px-10">
 
-                        <h2 className="mb-6 text-3xl font-bold text-[#2E2E2E]">
+                        <h2 className="mb-6 text-3xl font-bold text-text-primary">
                             Why Students Love FlashMind
                         </h2>
 
@@ -276,7 +276,7 @@ export default function HomePage() {
 
                     <section className="px-6 py-10 lg:px-10">
 
-                        <div className="rounded-[32px] bg-[#D97D56] p-10 text-center text-white">
+                        <div className="rounded-[32px] bg-terracotta p-10 text-center text-white">
 
                             <h2 className="text-4xl font-bold">
                                 Ready to master any subject?
@@ -287,7 +287,7 @@ export default function HomePage() {
                                 every day with FlashMind.
                             </p>
 
-                            <button className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-[#D97D56]">
+                            <button className="mt-8 inline-flex items-center gap-2 rounded-full bg-white px-8 py-4 font-semibold text-terracotta">
                                 Get Started
                                 <ArrowRight size={18} />
                             </button>
@@ -315,8 +315,8 @@ function SidebarItem({
         <button
             className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3 transition
       ${active
-                    ? "bg-[#D97D56] text-white"
-                    : "text-[#2E2E2E] hover:bg-[#F6EBDD]"
+                    ? "bg-terracotta text-white"
+                    : "text-text-primary hover:bg-beige"
                 }`}
         >
             {icon}
@@ -336,11 +336,11 @@ function StatCard({
 }) {
     return (
         <div className="rounded-[28px] bg-white p-6">
-            <div className="mb-4 text-[#D97D56]">
+            <div className="mb-4 text-terracotta">
                 {icon}
             </div>
 
-            <h3 className="text-3xl font-bold text-[#2E2E2E]">
+            <h3 className="text-3xl font-bold text-text-primary">
                 {value}
             </h3>
 
@@ -368,7 +368,7 @@ function DeckCard({
                 style={{ backgroundColor: color }}
             />
 
-            <h3 className="font-semibold text-[#2E2E2E]">
+            <h3 className="font-semibold text-text-primary">
                 {title}
             </h3>
 
@@ -391,10 +391,10 @@ function FeatureCard({
 
             <Star
                 size={22}
-                className="mb-4 text-[#D97D56]"
+                className="mb-4 text-terracotta"
             />
 
-            <h3 className="text-xl font-semibold text-[#2E2E2E]">
+            <h3 className="text-xl font-semibold text-text-primary">
                 {title}
             </h3>
 

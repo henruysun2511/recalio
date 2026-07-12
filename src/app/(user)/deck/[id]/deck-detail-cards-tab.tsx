@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { CardFilter } from "./card/card-filter"
 import { STATE_BADGE } from "@/utils/mapping"
 import { CardState } from "@/constants/type"
+import { ImageOcclusionCardView } from "@/app/(user)/deck/[id]/create-notes/image-occlusion-card-view"
 import type { Card } from "@/schemas/card.schema"
 
 interface CardsTabProps {
@@ -36,7 +37,12 @@ export function CardsTab({ deckId }: CardsTabProps) {
     const filteredCards = React.useMemo(() => {
         if (!search.trim()) return cards
         const q = search.toLowerCase()
-        return cards.filter((c) => c.note?.word?.toLowerCase().includes(q))
+        return cards.filter((c) => {
+            if (c.note?.word?.toLowerCase().includes(q)) return true
+            if (c.note?.meaning?.toLowerCase().includes(q)) return true
+            if (c.occlusion?.masks?.some((m) => m.label?.toLowerCase().includes(q))) return true
+            return false
+        })
     }, [cards, search])
 
     const handleStateChange = (value: string) => {
@@ -93,6 +99,7 @@ export function CardsTab({ deckId }: CardsTabProps) {
 function CardItem({ card }: { card: Card }) {
     const [flipped, setFlipped] = React.useState(false)
     const badge = STATE_BADGE[card.state] ?? { label: card.state, className: "bg-gray-100 text-gray-500 border-gray-200" }
+    const isOcclusion = !!card.occlusion
 
     return (
         <div className="group relative rounded-[28px] border border-beige bg-white p-5 shadow-sm transition-all hover:shadow-md">
@@ -103,16 +110,25 @@ function CardItem({ card }: { card: Card }) {
             </div>
 
             <div className="mt-6">
-                {flipped ? (
-                    <div
-                        className="prose prose-sm max-w-none text-text-primary leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: card.backHtml }}
+                {isOcclusion && card.occlusion ? (
+                    <ImageOcclusionCardView
+                        imageUrl={card.occlusion.imageUrl}
+                        masks={card.occlusion.masks}
+                        variantIndex={card.variantIndex ?? 0}
+                        showBack={flipped}
+                        compact
                     />
                 ) : (
-                    <div
-                        className="prose prose-sm max-w-none text-text-primary font-bold leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: card.frontHtml }}
-                    />
+                    <div className={`min-h-[80px] flex items-center justify-center ${flipped ? "" : ""}`}>
+                        <style>{`
+                            .cloze { font-weight: 800; color: #92400e; background: rgba(251,191,36,0.15); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(251,191,36,0.3); }
+                            .cloze-reveal { font-weight: 800; color: #166534; background: rgba(34,197,94,0.12); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(34,197,94,0.3); }
+                        `}</style>
+                        <div
+                            className="prose prose-sm max-w-none text-center"
+                            dangerouslySetInnerHTML={{ __html: flipped ? card.backHtml : card.frontHtml }}
+                        />
+                    </div>
                 )}
             </div>
 

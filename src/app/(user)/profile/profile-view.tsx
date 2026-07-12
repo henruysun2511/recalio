@@ -1,11 +1,10 @@
 "use client"
 
-import { Calendar, Clock, BookCheck, Eye, Loader2 } from "lucide-react"
+import { Calendar, Clock, BookCheck, Eye } from "lucide-react"
 import { UserAvatar } from "@/components/common/user-avatar"
 import { Badge } from "@/components/ui/badge"
 import { UserProfile, PublicProfile } from "@/schemas/user.schema"
-
-const MOCK_LANGUAGES = ["English", "Japanese"]
+import { useUserLanguages } from "@/queries/useUserQuery"
 
 interface ProfileViewProps {
     user: UserProfile | PublicProfile
@@ -14,7 +13,10 @@ interface ProfileViewProps {
     tabs: React.ReactNode
 }
 
-export function ProfileView({ user: u, heroAction, tabs }: ProfileViewProps) {
+export function ProfileView({ user: u, isOwn, heroAction, tabs }: ProfileViewProps) {
+    const { data: langRes } = useUserLanguages(isOwn)
+    const languages = isOwn ? langRes?.data ?? [] : []
+
     return (
         <div className="space-y-8 px-4 py-6 md:px-6">
             {/* Hero */}
@@ -26,26 +28,28 @@ export function ProfileView({ user: u, heroAction, tabs }: ProfileViewProps) {
                         <div className="flex items-start justify-between gap-4">
                             <div>
                                 <h1 className="text-2xl font-black text-text-primary tracking-tight">{u.displayName}</h1>
-                                <p className="text-text-muted font-medium">@{u.username}</p>
-                                {u.bio && <p className="mt-1 text-sm text-text-muted/80">{u.bio}</p>}
+                                <p className="mt-1.5 text-text-muted font-medium">@{u.username}</p>
+                                {u.bio && <p className="mt-3 text-sm text-text-muted/80">{u.bio}</p>}
                             </div>
                             {heroAction && <div className="shrink-0">{heroAction}</div>}
                         </div>
 
-                        <div className="mt-3 flex flex-wrap gap-2">
-                            {MOCK_LANGUAGES.map((lang) => (
-                                <Badge key={lang} variant="outline" className="rounded-full px-3 py-1 text-xs font-semibold text-text-muted border-beige">
-                                    {lang === "English" ? "🇬🇧" : "🇯🇵"} {lang}
-                                </Badge>
-                            ))}
-                        </div>
+                        {languages.length > 0 && (
+                            <div className="mt-4 flex flex-wrap gap-2">
+                                {languages.map((lang) => (
+                                    <Badge key={lang.languageId} variant="outline" className="rounded-full px-3 py-1 text-xs font-semibold text-text-muted border-beige">
+                                        {lang.language.flagEmoji} {lang.language.name}
+                                    </Badge>
+                                ))}
+                            </div>
+                        )}
 
-                        <div className="mt-2 flex items-center gap-1.5 text-xs text-text-muted/60 font-medium">
+                        <div className="mt-4 flex items-center gap-1.5 text-xs text-text-muted/60 font-medium">
                             <Calendar className="size-3.5" />
                             Tham gia: {new Date(u.createdAt).toLocaleDateString("vi-VN")}
                         </div>
 
-                        <div className="mt-2 flex items-center gap-4 text-sm font-bold text-text-muted">
+                        <div className="mt-3 flex items-center gap-4 text-sm font-bold text-text-muted">
                             <span>{(u as any).followerCount ?? 0} người follow</span>
                             <span>•</span>
                             <span>đang follow {(u as any).followingCount ?? 0}</span>
@@ -54,7 +58,7 @@ export function ProfileView({ user: u, heroAction, tabs }: ProfileViewProps) {
                 </div>
 
                 {/* Stats row */}
-                <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <StatBadge icon={<BookCheck className="size-4" />} value={(u.stats?.totalCards ?? 0).toLocaleString()} label="Từ đã học" />
                     <StatBadge icon={<Calendar className="size-4" />} value={String(u.stats?.totalStudyDays ?? 0)} label="Ngày học" />
                     <StatBadge icon={<Eye className="size-4" />} value={(u.stats?.totalReviews ?? 0).toLocaleString()} label="Lượt review" />

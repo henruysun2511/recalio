@@ -8,12 +8,21 @@ export const cardSchema = z.object({
     cardTemplateId: z.string().uuid(),
     state: z.nativeEnum(CardState),
     due: z.string(),
+    variantIndex: z.number().int().nullable().optional(),
     frontHtml: z.string(),
     backHtml: z.string(),
     css: z.string(),
+    occlusion: z.object({
+        imageUrl: z.string(),
+        masks: z.array(z.object({
+            x: z.number(), y: z.number(), width: z.number(), height: z.number(),
+            groupIndex: z.number().int(),
+            label: z.string().nullable().optional(),
+        })),
+    }).optional(),
     note: z.object({
-        word: z.string(),
-        meaning: z.string(),
+        word: z.string().nullable().optional(),
+        meaning: z.string().nullable().optional(),
         ipa: z.string().nullable().optional(),
         partOfSpeech: z.string().nullable().optional(),
         example: z.string().nullable().optional(),

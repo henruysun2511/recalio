@@ -7,7 +7,7 @@ export function HeroBanner() {
                 className="h-[260px] w-full object-cover"
             />
 
-            <div className="absolute bottom-0 left-0 w-full rounded-t-[24px] bg-[#D97D56] p-6 text-white">
+            <div className="absolute bottom-0 left-0 w-full rounded-t-[24px] bg-terracotta p-6 text-white">
                 <h2 className="text-3xl font-semibold">
                     Autumn Day
                 </h2>

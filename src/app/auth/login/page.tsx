@@ -23,7 +23,7 @@ import { loginSchema, type LoginInput } from "@/schemas/auth.schema";
 import { useLogin } from "@/queries/useAuthQuery";
 import { handleError } from "@/utils/handleError";
 import { toast } from "sonner";
-import { StatCard1 } from "@/components/common/stat-card";
+import { Title } from "@/components/common/title";
 
 export default function LoginPage() {
     const loginMutation = useLogin();
@@ -46,13 +46,7 @@ export default function LoginPage() {
     return (
         <div className="w-full max-w-md">
             <div className="mb-8">
-                <h2 className="text-4xl font-bold text-text-primary">
-                    Welcome Back
-                </h2>
-
-                <p className="mt-2 text-neutral-500">
-                    Continue your learning journey.
-                </p>
+                <Title title="Chào mừng trở lại" description="Tiếp tục hành trình học tập của bạn" className="text-4xl" />
             </div>
 
             <Form {...form}>
@@ -65,7 +59,7 @@ export default function LoginPage() {
                         name="username"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Tên đăng nhập</FormLabel>
                                 <FormControl>
                                     <Input
                                         placeholder="john_doe"
@@ -83,7 +77,7 @@ export default function LoginPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>Mật khẩu</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="password"
@@ -100,15 +94,15 @@ export default function LoginPage() {
                     <div className="flex items-center justify-between">
                         <label className="flex items-center gap-2 text-sm text-neutral-600">
                             <input type="checkbox" />
-                            Remember me
-                        </label>
+                        Ghi nhớ đăng nhập
+                            </label>
 
-                        <Link
-                            href="#"
-                            className="text-sm text-terracotta"
-                        >
-                            Forgot password?
-                        </Link>
+                            <Link
+                                href="/auth/forgot-password"
+                                className="text-sm text-terracotta"
+                            >
+                                Quên mật khẩu?
+                            </Link>
                     </div>
 
                     <Button
@@ -116,7 +110,7 @@ export default function LoginPage() {
                         disabled={loginMutation.isPending}
                         className="form-btn"
                     >
-                        {loginMutation.isPending ? "Signing in..." : "Sign In"}
+                        {loginMutation.isPending ? "Đang đăng nhập..." : "Đăng nhập"}
                     </Button>
 
                     <div className="form-divider">
@@ -124,7 +118,7 @@ export default function LoginPage() {
                         <div className="form-divider-line" />
 
                         <div className="form-divider-text">
-                            <span>or continue with</span>
+                            <span>hoặc tiếp tục với</span>
                         </div>
                     </div>
                     <Button
@@ -139,12 +133,12 @@ export default function LoginPage() {
             </Form>
 
             <p className="mt-8 text-center text-sm text-neutral-500">
-                Don't have an account?{" "}
+                Chưa có tài khoản?{" "}
                 <Link
                     href="/auth/register"
                     className="font-medium text-terracotta"
                 >
-                    Sign Up
+                    Đăng ký
                 </Link>
             </p>
 
@@ -160,15 +154,14 @@ export default function LoginPage() {
                                 FlashMind
                             </h3>
                             <p className="text-sm text-neutral-500">
-                                Learn smarter every day
+                                Học thông minh hơn mỗi ngày
                             </p>
                         </div>
                     </div>
 
                     <p className="mt-4 text-neutral-600">
-                        AI-powered flashcards and
-                        spaced repetition for better
-                        long-term memory.
+                        Thẻ ghi nhớ AI và lặp lại ngắt quãng
+                        giúp ghi nhớ lâu dài hơn.
                     </p>
                 </div>
             </div>

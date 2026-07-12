@@ -26,6 +26,16 @@ export const useDeleteReview = () => {
     })
 }
 
+export const useLatestReviews = () => {
+    return useQuery({
+        queryKey: [...REVIEW_QUERY_KEY, "latest"],
+        queryFn: async () => {
+            const res = await reviewService.listLatest()
+            return res.data
+        },
+    })
+}
+
 export const useUpsertReview = () => {
     const queryClient = useQueryClient()
 

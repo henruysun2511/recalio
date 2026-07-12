@@ -16,9 +16,9 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProfilePage() {
     return (
-        <main className="min-h-screen bg-[#FDFBF7] text-black">
+        <main className="min-h-screen bg-off-white text-black">
 
-            {/* <section className="relative h-72 border-b-4 border-black bg-[#A7D8FF]">
+            {/* <section className="relative h-72 border-b-4 border-black bg-blue-soft">
                 <div className="absolute right-12 top-12 text-8xl">📚</div>
                 <div className="absolute left-12 top-12 text-7xl">🤖</div>
             </section> */}
@@ -31,7 +31,7 @@ export default function ProfilePage() {
                         className="
                 flex h-40 w-40 shrink-0 items-center justify-center
                 rounded-full border-4 border-black
-                bg-[#FFE27A] text-7xl
+                bg-gold text-7xl
                 shadow-[8px_8px_0px_#000]
                 transform -rotate-3 hover:rotate-0 transition-transform duration-200
             "
@@ -55,11 +55,11 @@ export default function ProfilePage() {
                 <div className="flex justify-center gap-4 sm:w-full md:w-auto">
                     <Button className="
             border-4 border-black
-            bg-[#FFE27A]
+            bg-gold
             font-black
             text-black
             shadow-[4px_4px_0px_#000]
-            hover:bg-[#ffd84d]
+            hover:bg-gold-dark
             active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000]
             transition-all
         ">
@@ -69,11 +69,11 @@ export default function ProfilePage() {
 
                     <Button className="
             border-4 border-black
-            bg-[#A7D8FF]
+            bg-blue-soft
             font-black
             text-black
             shadow-[4px_4px_0px_#000]
-            hover:bg-[#8ec5fc]
+            hover:bg-blue-dark
             active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_#000]
             transition-all
         ">
@@ -91,7 +91,7 @@ export default function ProfilePage() {
               flex h-40 w-40 items-center justify-center
               rounded-full
               border-4 border-black
-              bg-[#FFE27A]
+              bg-gold
               text-7xl
               shadow-[8px_8px_0px_#000]
             "
@@ -110,11 +110,11 @@ export default function ProfilePage() {
                     <div className="mt-6 flex gap-4">
                         <Button className="
                 border-4 border-black
-                bg-[#FFE27A]
+                bg-gold
                 font-bold
                 text-black
                 shadow-[4px_4px_0px_#000]
-                hover:bg-[#ffd84d]
+                hover:bg-gold-dark
               ">
                             <UserPlus className="mr-2 h-4 w-4" />
                             Follow
@@ -122,11 +122,11 @@ export default function ProfilePage() {
 
                         <Button className="
                 border-4 border-black
-                bg-[#FFB7D5]
+                bg-pink-soft
                 font-bold
                 text-black
                 shadow-[4px_4px_0px_#000]
-                hover:bg-[#ffa1c6]
+                hover:bg-pink-dark
               ">
                             <MessageCircle className="mr-2 h-4 w-4" />
                             Message
@@ -192,7 +192,7 @@ export default function ProfilePage() {
                         <Card className="
                 rounded-[32px]
                 border-4 border-black
-                bg-[#D6C2FF]
+                bg-purple-soft
                 shadow-[8px_8px_0px_#000]
               ">
                             <CardContent className="p-6">
@@ -230,11 +230,11 @@ export default function ProfilePage() {
                                             className={`
                         aspect-square rounded-md border-2 border-black
                         ${i % 4 === 0
-                                                    ? "bg-[#FFE27A]"
+                                                    ? "bg-gold"
                                                     : i % 4 === 1
-                                                        ? "bg-[#FFB7D5]"
+                                                        ? "bg-pink-soft"
                                                         : i % 4 === 2
-                                                            ? "bg-[#A7D8FF]"
+                                                            ? "bg-blue-soft"
                                                             : "bg-[#B8F5B0]"
                                                 }
                       `}

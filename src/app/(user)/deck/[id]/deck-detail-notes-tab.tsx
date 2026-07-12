@@ -4,6 +4,7 @@ import React from "react"
 import { Loader2Icon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useNotesByDeck, useUpdateNote, useDeleteNote } from "@/queries/useNoteQuery"
+import { useNoteTemplates } from "@/queries/useNoteTemplateQuery"
 import { DataPagination } from "@/components/common/data-pagination"
 import { EmptyState } from "@/components/common/empty-state"
 import { NoteFilter } from "./note/note-filter"
@@ -16,6 +17,7 @@ import { toast } from "sonner"
 import { handleError } from "@/utils/handleError"
 import { PartOfSpeech } from "@/constants/type"
 import type { Note } from "@/schemas/note.schema"
+import type { NoteTemplate } from "@/schemas/note-template.schema"
 
 interface NotesTabProps {
     deckId: string
@@ -31,11 +33,15 @@ export function NotesTab({ deckId, isOwner }: NotesTabProps) {
     const [editNote, setEditNote] = React.useState<Note | null>(null)
     const [deleteNote, setDeleteNote] = React.useState<Note | null>(null)
     const [relatedNote, setRelatedNote] = React.useState<Note | null>(null)
+    const [templateId, setTemplateId] = React.useState<string | undefined>()
     const limit = 30
 
+    const { data: templatesRes } = useNoteTemplates()
+    const templates: NoteTemplate[] = ((templatesRes as any)?.data ?? []) as NoteTemplate[]
+
     const params = React.useMemo(
-        () => ({ page, limit, search: search || undefined, sort, sortOrder }),
-        [page, search, sort, sortOrder],
+        () => ({ page, limit, search: search || undefined, sort, sortOrder, templateId }),
+        [page, search, sort, sortOrder, templateId],
     )
 
     const { data: res, isLoading } = useNotesByDeck(deckId, params)
@@ -122,6 +128,9 @@ export function NotesTab({ deckId, isOwner }: NotesTabProps) {
                 onSortOrderChange={handleSortOrderChange}
                 showAddButton={isOwner}
                 onAdd={() => router.push(`/deck/${deckId}/create-notes`)}
+                templates={templates}
+                templateId={templateId}
+                onTemplateChange={(v) => { setTemplateId(v || undefined); setPage(1) }}
             />
 
             {isLoading ? (
