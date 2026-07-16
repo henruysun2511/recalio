@@ -80,7 +80,15 @@ export function NotesTab({ deckId, isOwner }: NotesTabProps) {
         setEditNote(note)
     }
 
-    const handleSaveEdit = async (input: { word: string; meaning: string; ipa?: string; partOfSpeech?: string; example?: string; imageUrl?: string | null }) => {
+    const handleSaveEdit = async (input: {
+        word: string
+        meaning: string
+        ipa?: string
+        partOfSpeech?: string
+        example?: string
+        imageUrl?: string | null
+        audioUrl?: string | null
+    }) => {
         if (!editNote) return
         try {
             const data: Record<string, unknown> = {
@@ -91,6 +99,7 @@ export function NotesTab({ deckId, isOwner }: NotesTabProps) {
                 example: input.example,
             }
             if (input.imageUrl !== undefined) data.imageUrl = input.imageUrl
+            if (input.audioUrl !== undefined) data.audioUrl = input.audioUrl
 
             await updateMutation.mutateAsync({ id: editNote.id, data: data as any })
             toast.success("Cập nhật từ vựng thành công")

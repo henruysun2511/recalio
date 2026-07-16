@@ -39,7 +39,7 @@ function buildFieldMap(data: CardPreviewData): Record<string, string> {
         Extra: data.fields?.Extra ?? data.example ?? "",
         Image: data.imageUrl ? `<img src="${data.imageUrl}" class="card-image" />` : "",
         Audio: data.audioUrl ? `<button onclick="new Audio('${data.audioUrl}').play()" class="card-audio-btn">🔊 Nghe</button>` : "",
-        Label: data.word,
+        Label: data.fields?.Label ?? data.word,
         ...data.fields,
     }
 }
@@ -69,6 +69,33 @@ export function CardPreview({ data, templates }: CardPreviewProps) {
     if (templates && templates.length > 0) {
         return (
             <div className="space-y-4">
+                <style>{`
+                    .card-audio-btn {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                        padding: 6px 14px;
+                        border-radius: 10px;
+                        background: rgba(201, 106, 66, 0.1);
+                        color: #c96a42;
+                        font-weight: 700;
+                        font-size: 13px;
+                        border: none;
+                        cursor: pointer;
+                        transition: all 0.15s;
+                    }
+                    .card-audio-btn:hover {
+                        background: #c96a42;
+                        color: white;
+                    }
+                    .card-image {
+                        max-height: 180px;
+                        border-radius: 12px;
+                        object-fit: cover;
+                        margin: 8px auto;
+                        display: block;
+                    }
+                `}</style>
                 {templates.map((ct) => {
                     const fieldMap = buildFieldMap(data)
                     return (

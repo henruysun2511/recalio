@@ -125,6 +125,7 @@ export function NoteTemplateDialog({ open, onOpenChange, onSubmit, initialData, 
                                             <SelectContent>
                                                 <SelectItem value={NoteTemplateType.BASIC}>Basic</SelectItem>
                                                 <SelectItem value={NoteTemplateType.BASIC_REVERSED}>Basic (Reversed)</SelectItem>
+                                                <SelectItem value={NoteTemplateType.BASIC_AUDIO}>Basic (Audio Front)</SelectItem>
                                                 <SelectItem value={NoteTemplateType.CLOZE}>Cloze</SelectItem>
                                             </SelectContent>
                                         </Select>

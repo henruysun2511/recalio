@@ -28,6 +28,7 @@ import { CardPreview, CardTemplate } from "./card-preview"
 
 import { PARTS_OF_SPEECH, NoteTemplateType } from "@/constants/type"
 import { ImageOcclusionEditor } from "./image-occlusion-editor"
+import { ImageOcclusionCardView } from "./image-occlusion-card-view"
 import { ClozeEditor } from "./cloze-editor"
 
 interface ManualTabProps {
@@ -82,7 +83,7 @@ export function ManualTab({ deckId }: ManualTabProps) {
     const audioInputRef = useRef<HTMLInputElement>(null)
     const imageInputRef = useRef<HTMLInputElement>(null)
 
-    const isBasic = selectedType === NoteTemplateType.BASIC || selectedType === NoteTemplateType.BASIC_REVERSED
+    const isBasic = selectedType === NoteTemplateType.BASIC || selectedType === NoteTemplateType.BASIC_REVERSED || selectedType === NoteTemplateType.BASIC_AUDIO
     const isCloze = selectedType === NoteTemplateType.CLOZE
     const isOcclusion = selectedType === NoteTemplateType.IMAGE_OCCLUSION
 
@@ -482,8 +483,64 @@ export function ManualTab({ deckId }: ManualTabProps) {
 
                 {/* RIGHT: Preview */}
                 <div className="space-y-5">
-                    <CardPreview data={previewData} templates={cardTemplates.length > 0 ? cardTemplates : undefined} />
+                    {isOcclusion ? (
+                        <div className="space-y-4">
+                            {(() => {
+                                const groups = [...new Set(occlusionMasks.map(m => m.groupIndex))].sort((a, b) => a - b)
+                                const firstGroup = groups.length > 0 ? groups[0] : 0
+                                return (
+                                    <>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted ml-0.5">Front</p>
+                                                <div className="rounded-2xl border-2 border-dashed border-beige bg-white p-4">
+                                                    <ImageOcclusionCardView
+                                                        imageUrl={occlusionImageUrl}
+                                                        masks={occlusionMasks}
+                                                        variantIndex={firstGroup}
+                                                        showBack={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted ml-0.5">Back</p>
+                                                <div className="rounded-2xl border-2 border-dashed border-beige bg-white p-4">
+                                                    <ImageOcclusionCardView
+                                                        imageUrl={occlusionImageUrl}
+                                                        masks={occlusionMasks}
+                                                        variantIndex={firstGroup}
+                                                        showBack
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {groups.length > 0 && (
+                                            <div className="rounded-2xl border border-beige bg-white p-5 space-y-3">
+                                                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Cards will be created ({groups.length})</p>
+                                                {groups.map((g, i) => {
+                                                    const label = occlusionMasks.find(m => m.groupIndex === g)?.label
+                                                    const count = occlusionMasks.filter(m => m.groupIndex === g).length
+                                                    return (
+                                                        <div key={g} className="flex items-center gap-3">
+                                                            <span className="size-7 rounded-lg bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs shrink-0">{i + 1}</span>
+                                                            <div className="flex-1 min-w-0">
+                                                                <span className="text-sm font-semibold text-text-primary">{label || "No label"}</span>
+                                                                {count > 1 && <span className="text-[10px] text-text-muted ml-2">({count} masks)</span>}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
+                                    </>
+                                )
+                            })()}
+                        </div>
+                    ) : (
+                        <CardPreview data={previewData} templates={cardTemplates.length > 0 ? cardTemplates : undefined} />
+                    )}
 
+                    {!isOcclusion && (
                     <div className="rounded-2xl border border-beige bg-white p-5 space-y-3">
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-text-muted">Cards will be created</p>
                         {cardTemplates.map((ct) => (
@@ -493,6 +550,7 @@ export function ManualTab({ deckId }: ManualTabProps) {
                             </div>
                         ))}
                     </div>
+                    )}
                 </div>
             </div>
         </div>

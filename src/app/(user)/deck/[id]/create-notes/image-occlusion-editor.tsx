@@ -76,7 +76,7 @@ export function ImageOcclusionEditor({ imageUrl, masks, onChange }: ImageOcclusi
 
         const newMask: Mask = {
             x, y, width, height,
-            groupIndex: shiftHeld ? currentGroup : currentGroup,
+            groupIndex: shiftHeld && masks.length > 0 ? currentGroup - 1 : currentGroup,
         }
         onChange({ imageUrl, masks: [...masks, newMask] })
         if (!shiftHeld) setCurrentGroup((g) => g + 1)

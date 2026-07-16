@@ -13,7 +13,7 @@ export const cardSchema = z.object({
     backHtml: z.string(),
     css: z.string(),
     occlusion: z.object({
-        imageUrl: z.string(),
+        imageUrl: z.string().nullable(),
         masks: z.array(z.object({
             x: z.number(), y: z.number(), width: z.number(), height: z.number(),
             groupIndex: z.number().int(),

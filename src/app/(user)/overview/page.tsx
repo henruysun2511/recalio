@@ -66,7 +66,7 @@ export default function UserOverviewPage() {
                             AI-powered spaced repetition
                         </div>
 
-                        <h1 className="mt-6 text-4xl font-bold leading-tight text-text-primary lg:text-6xl">
+                        <h1 className="mt-6 font-black tracking-tighter text-text-primary text-4xl lg:text-6xl">
                             {greeting}, {displayName}
                         </h1>
 

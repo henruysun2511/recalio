@@ -19,7 +19,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { PARTS_OF_SPEECH, PartOfSpeech } from "@/constants/type"
-import { Upload, X, Loader2 } from "lucide-react"
+import { Upload, X, Loader2, Mic, Square, Play, Trash2, Volume2 } from "lucide-react"
 import cloudinaryService from "@/services/cloudinary.service"
 import { handleError } from "@/utils/handleError"
 import { toast } from "sonner"
@@ -36,6 +36,7 @@ interface NoteEditDialogProps {
         partOfSpeech?: string
         example?: string
         imageUrl?: string | null
+        audioUrl?: string | null
     }) => void
     loading?: boolean
 }
@@ -50,6 +51,14 @@ export function NoteEditDialog({ open, onOpenChange, note, onSave, loading }: No
     const [uploadingImage, setUploadingImage] = useState(false)
     const imageInputRef = useRef<HTMLInputElement>(null)
 
+    const [audioUrl, setAudioUrl] = useState<string | null>(null)
+    const [audioName, setAudioName] = useState<string | null>(null)
+    const [uploadingAudio, setUploadingAudio] = useState(false)
+    const [recording, setRecording] = useState(false)
+    const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+    const chunksRef = useRef<Blob[]>([])
+    const audioInputRef = useRef<HTMLInputElement>(null)
+
     useEffect(() => {
         if (note) {
             setWord(note.word ?? "")
@@ -58,6 +67,8 @@ export function NoteEditDialog({ open, onOpenChange, note, onSave, loading }: No
             setPartOfSpeech(note.partOfSpeech ?? "")
             setExample(note.example ?? "")
             setImageUrl(note.imageUrl ?? null)
+            setAudioUrl(note.audioUrl ?? null)
+            setAudioName(note.audioUrl ? "Audio đã tải lên" : null)
         }
     }, [note])
 
@@ -78,6 +89,57 @@ export function NoteEditDialog({ open, onOpenChange, note, onSave, loading }: No
         }
     }
 
+    const uploadAudioFile = async (file: File) => {
+        try {
+            setUploadingAudio(true)
+            const res = await cloudinaryService.upload(file)
+            const result = (res as any)?.data?.data ?? (res as any)?.data
+            setAudioUrl(result?.secure_url ?? result?.url ?? null)
+            setAudioName(file.name)
+            toast.success("Upload audio thành công")
+        } catch (e) {
+            handleError(e, "Upload audio thất bại")
+        } finally {
+            setUploadingAudio(false)
+        }
+    }
+
+    const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) uploadAudioFile(file)
+        e.target.value = ""
+    }
+
+    const startRecording = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+            const mediaRecorder = new MediaRecorder(stream, { mimeType: MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4" })
+            mediaRecorderRef.current = mediaRecorder
+            chunksRef.current = []
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunksRef.current.push(e.data)
+            }
+            mediaRecorder.onstop = async () => {
+                stream.getTracks().forEach((t) => t.stop())
+                const blob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType })
+                const file = new File([blob], `recording-${Date.now()}.${mediaRecorder.mimeType.includes("webm") ? "webm" : "mp4"}`, { type: mediaRecorder.mimeType })
+                await uploadAudioFile(file)
+            }
+            mediaRecorder.start()
+            setRecording(true)
+            toast.info("Đang ghi âm...")
+        } catch (e) {
+            handleError(e, "Không thể truy cập microphone")
+        }
+    }
+
+    const stopRecording = () => {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+            mediaRecorderRef.current.stop()
+            setRecording(false)
+        }
+    }
+
     const handleSave = () => {
         if (!word.trim()) return
         onSave({
@@ -87,6 +149,7 @@ export function NoteEditDialog({ open, onOpenChange, note, onSave, loading }: No
             partOfSpeech: partOfSpeech || undefined,
             example: example || undefined,
             imageUrl: imageUrl || null,
+            audioUrl: audioUrl || null,
         })
     }
 
@@ -165,6 +228,55 @@ export function NoteEditDialog({ open, onOpenChange, note, onSave, loading }: No
                             >
                                 {uploadingImage ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
                                 {uploadingImage ? "Đang tải..." : "Tải ảnh lên"}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold uppercase tracking-wider text-text-muted">Âm thanh</label>
+                        {(audioUrl && audioName) && (
+                            <div className="flex items-center gap-2 mb-2 bg-cream/50 rounded-xl px-3 py-2 border border-beige">
+                                <button
+                                    type="button"
+                                    onClick={() => { const a = new Audio(audioUrl); a.play().catch(() => { }) }}
+                                    className="size-8 rounded-lg bg-terracotta/10 flex items-center justify-center text-terracotta hover:bg-terracotta hover:text-white transition-colors shrink-0"
+                                    title="Play"
+                                >
+                                    <Play className="size-4 fill-current" />
+                                </button>
+                                <span className="text-sm font-medium text-text-primary truncate flex-1">{audioName}</span>
+                                <button
+                                    type="button"
+                                    onClick={() => { setAudioUrl(null); setAudioName(null) }}
+                                    className="size-8 rounded-lg bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 transition-colors shrink-0"
+                                    title="Remove"
+                                >
+                                    <Trash2 className="size-4" />
+                                </button>
+                            </div>
+                        )}
+                        <input ref={audioInputRef} type="file" accept="audio/*" onChange={handleAudioUpload} className="hidden" />
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => audioInputRef.current?.click()}
+                                disabled={uploadingAudio}
+                                className="h-10 rounded-xl border-beige bg-white text-xs font-bold hover:bg-cream gap-2"
+                            >
+                                {uploadingAudio ? <Loader2 className="size-4 animate-spin" /> : <Upload className="size-4" />}
+                                Tải file lên
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={recording ? stopRecording : startRecording}
+                                disabled={uploadingAudio}
+                                className={`h-10 rounded-xl border-beige text-xs font-bold gap-2 ${recording ? "bg-red-50 text-red-600 border-red-300 animate-pulse" : "bg-white hover:bg-cream"}`}
+                            >
+                                {recording ? <><Square className="size-4" /> Dừng</> : <><Mic className="size-4" /> Ghi âm</>}
                             </Button>
                         </div>
                     </div>

@@ -17,6 +17,7 @@ export enum LeechAction {
 export enum NoteTemplateType {
     BASIC = "BASIC",
     BASIC_REVERSED = "BASIC_REVERSED",
+    BASIC_AUDIO = "BASIC_AUDIO",
     CLOZE = "CLOZE",
     IMAGE_OCCLUSION = "IMAGE_OCCLUSION",
 }

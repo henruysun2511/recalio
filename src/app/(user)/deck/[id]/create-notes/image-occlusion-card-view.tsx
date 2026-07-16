@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+
 
 interface Mask {
     x: number
@@ -12,7 +12,7 @@ interface Mask {
 }
 
 interface ImageOcclusionCardViewProps {
-    imageUrl: string
+    imageUrl: string | null
     masks: Mask[]
     variantIndex: number
     showBack: boolean
@@ -20,20 +20,24 @@ interface ImageOcclusionCardViewProps {
 }
 
 export function ImageOcclusionCardView({ imageUrl, masks, variantIndex, showBack, compact }: ImageOcclusionCardViewProps) {
-    const imgRef = useMemo(() => ({ current: null as HTMLDivElement | null }), [])
 
     return (
         <div className={`w-full ${compact ? "max-w-[240px]" : "max-w-md"} mx-auto ${compact ? "space-y-2" : "space-y-4"}`}>
-            <div className="relative w-full overflow-hidden rounded-xl bg-cream/40 border border-beige shadow-sm"
-                style={{ aspectRatio: "4/3" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                    src={imageUrl}
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-contain p-1"
-                    draggable={false}
-                />
-                <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <div className="relative w-full overflow-hidden rounded-xl bg-cream/40 border border-beige shadow-sm">
+                {imageUrl ? (
+                    <img
+                        src={imageUrl}
+                        alt=""
+                        className="w-full h-auto block"
+                        draggable={false}
+                    />
+                ) : (
+                    <div className="flex items-center justify-center h-48 text-text-muted/40 text-sm font-bold">
+                        No image
+                    </div>
+                )}
+                {imageUrl && (
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
                     {masks.map((m, i) => {
                         const isTarget = m.groupIndex === variantIndex
                         if (showBack && isTarget) return null
@@ -65,6 +69,7 @@ export function ImageOcclusionCardView({ imageUrl, masks, variantIndex, showBack
                         )
                     })}
                 </svg>
+                )}
             </div>
             {showBack && (() => {
                 const revealed = masks.filter((m) => m.groupIndex === variantIndex)
