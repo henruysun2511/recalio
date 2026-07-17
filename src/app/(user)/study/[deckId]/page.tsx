@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import { ArrowLeft, Loader2, CheckCircle2, EyeOff, Ban, Check, X as XIcon } from "lucide-react"
 import { useDueCards, useCardsByDeck } from "@/queries/useCardQuery"
 import { useCreateSession, useEndSession } from "@/queries/useStudySessionQuery"
@@ -10,6 +10,7 @@ import { useDeck } from "@/queries/useDeckQuery"
 import { ReviewRating } from "@/constants/type"
 import { handleError } from "@/utils/handleError"
 import { STATE_BADGE } from "@/utils/mapping"
+import { CardPreview, buildFieldMap, processBackHtml, hasTypeMarker } from "@/components/common/card-preview"
 import { ImageOcclusionCardView } from "@/app/(user)/deck/[id]/create-notes/image-occlusion-card-view"
 import type { ReviewCardInput } from "@/schemas/card.schema"
 
@@ -22,92 +23,16 @@ const ratingConfig = [
     { rating: ReviewRating.EASY, label: "Easy", sub: "Rất dễ — bỏ qua", color: "bg-blue-500 hover:bg-blue-600" },
 ]
 
-function buildFieldMap(card: any): Record<string, string> {
-    const audioUrl = card?.note?.audioUrl ?? ""
-    const imageUrl = card?.note?.imageUrl ?? ""
-    return {
-        Word: card?.note?.word ?? "",
-        Meaning: card?.note?.meaning ?? "",
-        IPA: card?.note?.ipa ?? "",
-        PartOfSpeech: card?.note?.partOfSpeech ?? "",
-        Example: card?.note?.example ?? "",
-        Front: card?.note?.word ?? "",
-        Back: card?.note?.meaning ?? "",
-        Text: card?.note?.word ?? "",
-        Extra: card?.note?.example ?? "",
-        Image: imageUrl ? `<img src="${imageUrl}" class="card-image" />` : "",
-        Audio: audioUrl ? `<button onclick="new Audio('${audioUrl}').play()" class="card-audio-btn">🔊 Nghe</button>` : "",
-    }
-}
-
-function hasTypeMarker(html: string): boolean {
-    return /{{type:([^}]+)}}/i.test(html)
-}
-
-function processBackHtml(html: string, fieldMap: Record<string, string>): string {
-    let result = html
-    for (const [key, val] of Object.entries(fieldMap)) {
-        result = result.replaceAll(`{{${key}}}`, val)
-    }
-    result = result.replace(/{{type:([^}]+)}}/gi, (_, field) => {
-        const expected = fieldMap[field.trim()] || ""
-        return `<span class="font-bold text-terracotta">${expected}</span>`
-    })
-    result = result.replace(/{{cloze:([^}]+)}}/gi, (_, field) => {
-        const value = fieldMap[field.trim()] || ""
-        return `<span class="font-bold text-terracotta">${value}</span>`
-    })
-    result = result.replace(/<hr id="answer"\s*\/?>/gi, '<hr class="my-3 border-beige" />')
-    return result
-}
-
-function CardPreview({ card, compact }: { card: any; compact?: boolean }) {
-    const [showBack, setShowBack] = useState(false)
-    const isOcclusion = !!card?.occlusion
-    const fieldMap = useMemo(() => buildFieldMap(card), [card])
-    const backHtml = useMemo(() => processBackHtml(card?.backHtml ?? "", fieldMap), [card, fieldMap])
-
-    if (isOcclusion) {
-        return (
-            <div onClick={() => setShowBack((v) => !v)} className="cursor-pointer rounded-xl border border-beige bg-white p-3 shadow-sm hover:shadow-md">
-                <ImageOcclusionCardView
-                    imageUrl={card.occlusion.imageUrl}
-                    masks={card.occlusion.masks}
-                    variantIndex={card.variantIndex}
-                    showBack={showBack}
-                />
-            </div>
-        )
-    }
-
-    return (
-        <div
-            onClick={() => setShowBack((v) => !v)}
-            className={`relative cursor-pointer rounded-xl border border-beige bg-white shadow-sm transition-all hover:shadow-md [perspective:1000px] ${compact ? "min-h-[120px]" : "min-h-[160px]"}`}
-        >
-            <div className={`relative w-full ${compact ? "min-h-[100px]" : "min-h-[140px]"} transition-transform duration-500 [transform-style:preserve-3d] ${showBack ? "[transform:rotateY(180deg)]" : ""}`}>
-                <div className="absolute inset-0 flex items-center justify-center p-3 [backface-visibility:hidden]">
-                    <div
-                        className={`w-full text-center [&_img]:max-h-24 [&_img]:rounded-lg [&_img]:object-cover ${compact ? "text-xs" : "text-sm"}`}
-                        dangerouslySetInnerHTML={{ __html: card?.frontHtml ?? "" }}
-                    />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center p-3 [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                    <div
-                        className={`w-full text-center [&_img]:max-h-24 [&_img]:rounded-lg [&_img]:object-cover ${compact ? "text-xs" : "text-sm"}`}
-                        dangerouslySetInnerHTML={{ __html: backHtml }}
-                    />
-                </div>
-            </div>
-        </div>
-    )
-}
-
 export default function StudySessionPage() {
     const { deckId } = useParams<{ deckId: string }>()
+    const searchParams = useSearchParams()
     const router = useRouter()
+    const urlSessionId = searchParams.get('sessionId')
+    const urlMode = (searchParams.get('mode') as 'cram' | 'preview' | null) ?? undefined
+    const isCustomSession = urlMode === 'cram' || urlMode === 'preview'
+
     const { data: deckRes } = useDeck(deckId)
-    const { data: cardsRes, isLoading: cardsLoading } = useDueCards({ deckId, page: 1, limit: 200 })
+    const { data: cardsRes, isLoading: cardsLoading } = useDueCards({ deckId, page: 1, limit: 200, mode: urlMode ?? 'normal' })
     const createSession = useCreateSession()
     const endSession = useEndSession()
     const reviewCard = useReviewCard()
@@ -116,7 +41,7 @@ export default function StudySessionPage() {
     const deck = (deckRes as any)?.data
 
     const [allCards, setAllCards] = useState<any[]>([])
-    const [sessionId, setSessionId] = useState<string | null>(null)
+    const [sessionId, setSessionId] = useState<string | null>(urlSessionId)
     const { data: allDeckCardsData } = useCardsByDeck(deckId, { page: 1, limit: 50 })
     const deckCards = (allDeckCardsData as any)?.data ?? []
     const [phase, setPhase] = useState<Phase>("loading")
@@ -142,6 +67,11 @@ export default function StudySessionPage() {
     const startSession = useCallback(async () => {
         if (sessionStartedRef.current) return
         sessionStartedRef.current = true
+        if (urlSessionId) {
+            sessionIdRef.current = urlSessionId
+            setSessionId(urlSessionId)
+            return
+        }
         try {
             const res = await createSession.mutateAsync({ deckId })
             const session = (res as any)?.data
@@ -153,7 +83,7 @@ export default function StudySessionPage() {
             handleError(err, "Không thể bắt đầu phiên học")
             router.push("/study")
         }
-    }, [deckId, createSession])
+    }, [deckId, createSession, urlSessionId])
 
     useEffect(() => {
         if (initializedRef.current) return
@@ -171,12 +101,10 @@ export default function StudySessionPage() {
     }, [cardsLoading, cardsRes])
 
     const handleFlip = () => {
-        if (!flipped) {
-            setFlipped(true)
-            setTypedAnswer("")
-            setAnswerResult(null)
-            setTimeout(() => inputRef.current?.focus(), 100)
-        }
+        setFlipped((v) => !v)
+        setTypedAnswer("")
+        setAnswerResult(null)
+        setTimeout(() => inputRef.current?.focus(), 100)
     }
 
     const handleRating = async (rating: ReviewRating) => {
@@ -303,7 +231,7 @@ export default function StudySessionPage() {
     }
 
     return (
-        <div className="mx-auto max-w-2xl space-y-6">
+        <div className="mx-auto max-w-4xl space-y-6">
             <style>{`
                 .cloze {
                     font-weight: 800;
@@ -353,9 +281,17 @@ export default function StudySessionPage() {
                 <button onClick={() => router.push("/study")} className="flex items-center gap-2 text-sm font-medium text-text-muted hover:text-text-primary">
                     <ArrowLeft className="size-4" /> {deck?.name || "Học tập"}
                 </button>
-                <span className="text-sm font-medium text-text-muted">
-                    {currentIndex + 1} / {allCards.length}
-                </span>
+                <div className="flex items-center gap-2">
+                    {urlMode === 'cram' && (
+                        <span className="rounded-md bg-purple-100 px-2 py-0.5 text-[11px] font-bold text-purple-700">Cram</span>
+                    )}
+                    {urlMode === 'preview' && (
+                        <span className="rounded-md bg-blue-100 px-2 py-0.5 text-[11px] font-bold text-blue-700">Preview</span>
+                    )}
+                    <span className="text-sm font-medium text-text-muted">
+                        {currentIndex + 1} / {allCards.length}
+                    </span>
+                </div>
             </div>
 
             <div className="h-1.5 w-full rounded-full bg-beige overflow-hidden">
@@ -367,9 +303,9 @@ export default function StudySessionPage() {
 
             <div
                 onClick={handleFlip}
-                className="relative min-h-[320px] cursor-pointer rounded-3xl border border-beige bg-white shadow-sm transition-all hover:shadow-md [perspective:1000px]"
+                className="relative min-h-[60vh] w-full cursor-pointer rounded-3xl border border-beige bg-white shadow-sm transition-all hover:shadow-md overflow-hidden [perspective:1000px]"
             >
-                <div className={`relative w-full min-h-[280px] transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}>
+                <div className={`relative w-full min-h-[55vh] transition-transform duration-500 [transform-style:preserve-3d] ${flipped ? '[transform:rotateY(180deg)]' : ''}`}>
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 [backface-visibility:hidden]">
                         {currentCard?.occlusion ? (
                             <ImageOcclusionCardView
@@ -385,7 +321,6 @@ export default function StudySessionPage() {
                             />
                         )}
                         <style>{currentCard?.css}</style>
-                        <p className="mt-6 text-xs font-medium text-text-muted">Chạm để lật thẻ</p>
                     </div>
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-8 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                         {currentCard?.occlusion ? (
@@ -403,8 +338,7 @@ export default function StudySessionPage() {
                         )}
                         <style>{currentCard?.css}</style>
                         {isTypeAnswer && answerResult && (
-                            <div className={`mt-4 flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold ${answerResult.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                }`}>
+                            <div className={`mt-4 flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold ${answerResult.correct ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                                 {answerResult.correct ? (
                                     <><Check className="size-4" /> Chính xác!</>
                                 ) : (

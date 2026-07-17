@@ -43,6 +43,7 @@ RECALIO là nền tảng học từ vựng sử dụng thuật toán lặp lại
 - 🔤 **Cloze** – Mẫu thẻ điền khuyết với cloze editor trực quan
 - 🖼️ **Image Occlusion** – Tạo thẻ che/mở hình ảnh bằng SVG overlay, hỗ trợ nhóm occlusion
 - 🖼️ **Hỗ trợ hình ảnh & âm thanh** – Hiển thị ảnh và phát audio ngay trên thẻ
+- 🎮 **Chế độ luyện tập** – 6 chế độ tương tác (dictation, fill-blank, multiple choice, matching, spelling, word scramble)
 - 📈 **Thống kê học tập** – Biểu đồ phân bố đánh giá, lịch sử phiên ôn tập
 - 🏆 **Thành tích & Gamification** – Huy hiệu, điểm kinh nghiệm, bảng xếp hạng
 - 👥 **Cộng đồng** – Chia sẻ bộ thẻ, theo dõi người dùng, bình luận và đánh giá
@@ -329,7 +330,7 @@ Mỗi bộ thẻ có thể cấu hình riêng các tham số SRS:
 
 Recalio tích hợp nhiều phương pháp sinh nội dung học tập bằng AI, giúp người dùng tiết kiệm thời gian tạo thẻ thủ công và tập trung vào việc học.
 
-### ✨ Auto-fill thông minh (trong tạo thủ công)
+### ✨ Auto-fill thông minh
 
 Khi tạo note thủ công ở tab **Manual**, người dùng chỉ cần nhập **từ vựng** và **ngôn ngữ**, sau đó bấm nút **Auto-fill** (icon 🔍 cạnh ô Word). Hệ thống sẽ tự động điền các trường còn lại:
 
@@ -338,7 +339,10 @@ Khi tạo note thủ công ở tab **Manual**, người dùng chỉ cần nhập
 - **Example** — Câu ví dụ.
 - **Part of Speech** — Loại từ.
 
-> **Cách hoạt động:** Frontend gọi `POST /ai/extract-from-text` với `{ text, languageId }`. Backend dùng AI provider (Gemini/OpenAI) để phân tích ngữ cảnh và trả về JSON chứa `word, meaning, ipa, example, partOfSpeech, difficulty`. Kết quả được điền tự động vào form, người dùng có thể chỉnh sửa trước khi lưu.
+<br/>
+<div align="center">
+<img src="public/create-note.png" alt="Review" width="80%">
+</div>
 
 ### 📝 Trích xuất từ văn bản (Text Extraction)
 
@@ -351,9 +355,19 @@ Dán văn bản đầu vào, AI tự động phân tích và trích xuất các 
 - Ví dụ (example sentence).
 - Độ khó.
 
+<br/>
+<div align="center">
+<img src="public/ai-generate-from-text.png" alt="Review" width="80%">
+</div>
+
 ### 🎯 Sinh từ vựng theo chủ đề (Topic Generation)
 
 Nhập chủ đề mong muốn (vd: "French cuisine", "Business English", "Technology"), AI sẽ tự động sinh danh sách từ vựng liên quan kèm đầy đủ thông tin như mục trích xuất từ văn bản.
+
+<br/>
+<div align="center">
+<img src="public/ai-generate-from-topic.png" alt="Review" width="80%">
+</div>
 
 ### 🖼️ Nhận diện từ hình ảnh (Image Detection)
 
@@ -362,6 +376,11 @@ Upload hình ảnh, AI nhận diện các đối tượng trong ảnh và sinh t
 - Phát hiện object trong ảnh.
 - Sinh từ vựng kèm nghĩa và ví dụ.
 - Hỗ trợ nhiều loại ảnh khác nhau.
+
+<br/>
+<div align="center">
+<img src="public/detect3.png" alt="Review" width="80%">
+</div>
 
 ### 📄 Xử lý tài liệu (Document Processing)
 
@@ -374,6 +393,11 @@ Upload file PDF (tối đa 10MB, tối đa 2 trang), AI trích xuất nội dung
 ### 🔗 Từ vựng liên quan (Related Notes)
 
 Với một từ vựng đã có, AI có thể gợi ý các từ đồng nghĩa (synonyms) và trái nghĩa (antonyms) để mở rộng vốn từ.
+
+<br/>
+<div align="center">
+<img src="public/related-note.png" alt="Review" width="40%">
+</div>
 
 ### ✅ Quy trình làm việc
 
@@ -417,6 +441,11 @@ Nhập từ vựng trực tiếp với các trường:
 - Tự động highlight cloze khi ôn tập.
 - Cloze được đánh dấu bằng cú pháp `{{c1::text}}`.
 
+<br/>
+<div align="center">
+<img src="public/cloze.png" alt="Review" width="80%">
+</div>
+
 ### 🖼️ Image Occlusion
 
 - Upload hình ảnh làm nền.
@@ -424,6 +453,11 @@ Nhập từ vựng trực tiếp với các trường:
 - Gộp occlusion theo nhóm (groupIndex) để hiển thị/ẩn theo nhóm.
 - Mặt trước: hiển thị ảnh với các occlusion che nội dung.
 - Mặt sau: hiển thị ảnh gốc (bỏ occlusion) kèm ghi chú.
+
+<br/>
+<div align="center">
+<img src="public/image-conclusion.png" alt="Review" width="80%">
+</div>
 
 ### 📊 Import CSV
 
@@ -564,6 +598,50 @@ Người dùng tạo note (có word, không có audioUrl)
 - Audio được nhúng qua template variable `{{Audio}}`.
 - Khi preview, audio hiển thị dưới dạng nút phát.
 - Trong phiên ôn tập, audio được phát bằng HTMLAudioElement.
+
+---
+
+## 🎮 Chế độ luyện tập (Practice Modes)
+
+Bên cạnh các phiên ôn tập theo Spaced Repetition (SRS), Recalio cung cấp nhiều chế độ luyện tập đa dạng nhằm củng cố kiến thức từ nhiều góc độ khác nhau. Mỗi chế độ tập trung vào một kỹ năng riêng như nghe, ghi nhớ ngữ cảnh, chính tả hay phản xạ, giúp việc học trở nên trực quan, thú vị và hiệu quả hơn.
+
+| **Chế độ**               | **Mô tả**                                                                                                                                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **🎧 Dictation**         | Nghe phát âm của từ và nhập lại chính xác từ đã nghe. Hỗ trợ phát lại âm thanh, gợi ý nghĩa và câu ví dụ để tăng khả năng nhận diện từ vựng.                                                                                                                                                     |
+| **📝 Fill in the Blank** | Hoàn thành câu bằng cách điền từ còn thiếu vào vị trí được che. Có thể nghe phát âm và sử dụng gợi ý khi cần, giúp ghi nhớ từ trong ngữ cảnh thực tế.                                                                                                                                            |
+| **✅ Multiple Choice**    | Chọn đáp án đúng trong bốn lựa chọn. Sau khi hoàn thành toàn bộ câu hỏi, hệ thống hiển thị kết quả tổng quan và lời giải chi tiết cho từng câu.                                                                                                                                                  |
+| **🔗 Matching**          | Ghép từ vựng với nghĩa tương ứng bằng thao tác kéo – thả trực quan. Mỗi lượt tối đa 8 cặp từ; nếu ghép sai, các cặp sẽ được đặt lại để người học tiếp tục thử.                                                                                                                                   |
+| **✍️ Spelling**          | Dựa vào nghĩa và câu ví dụ để nhập đúng chính tả của từ. Hệ thống kiểm tra kết quả theo thời gian thực và hỗ trợ gợi ý phiên âm (IPA).                                                                                                                                                           |
+| **🔤 Word Scramble**     | Sắp xếp các chữ cái bị xáo trộn để tạo thành từ hoàn chỉnh. Khi trả lời đúng, hệ thống tự động chuyển sang từ tiếp theo; nếu sai, giao diện rung nhẹ và đặt lại để người học thử lại. Thiết kế gồm hai hàng hiển thị các chữ đã chọn và các chữ còn lại, giúp thao tác trực quan và dễ theo dõi. |
+
+<br/>
+<div align="center">
+<img src="public/modes.png" alt="Review" width="80%">
+</div>
+
+<br />
+<table align="center">
+  <tr>
+    <td align="center">
+      <img src="public/mode1.png" width="100%"><br>
+      Sắp xếp chữ cái
+    </td>
+    <td align="center">
+      <img src="public/mode2.png" width="100%"><br>
+      Điền từ
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="public/mode3.png" width="100%"><br>
+      Ghép cặp
+    </td>
+    <td align="center">
+      <img src="public/mode4.png" width="100%"><br>
+     Trắc nghiệm
+    </td>
+  </tr>
+</table>
 
 ---
 

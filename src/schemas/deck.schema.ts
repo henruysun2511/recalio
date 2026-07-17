@@ -38,6 +38,7 @@ export const createDeckSchema = z.object({
     isPublic: z.boolean().optional(),
     tags: z.array(z.string()).optional(),
     parentId: z.string().uuid().optional(),
+    setting: z.record(z.string(), z.any()).optional(),
 });
 
 export type CreateDeckInput = z.infer<typeof createDeckSchema>;

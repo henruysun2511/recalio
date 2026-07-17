@@ -12,6 +12,7 @@ export const cardSchema = z.object({
     frontHtml: z.string(),
     backHtml: z.string(),
     css: z.string(),
+    templateType: z.string().optional(),
     occlusion: z.object({
         imageUrl: z.string().nullable(),
         masks: z.array(z.object({
@@ -28,6 +29,7 @@ export const cardSchema = z.object({
         example: z.string().nullable().optional(),
         audioUrl: z.string().nullable().optional(),
         imageUrl: z.string().nullable().optional(),
+        fields: z.record(z.string(), z.any()).nullable().optional(),
     }).optional(),
 });
 
@@ -45,9 +47,10 @@ export const dueCardsParamsSchema = z.object({
     deckId: z.string().uuid().optional(),
     page: z.coerce.number().optional().default(1),
     limit: z.coerce.number().optional().default(20),
+    mode: z.enum(['normal', 'cram', 'preview']).optional().default('normal'),
 });
 
-export type DueCardsParams = z.infer<typeof dueCardsParamsSchema>;
+export type DueCardsParams = z.input<typeof dueCardsParamsSchema>;
 
 export const reviewCardSchema = z.object({
     rating: z.nativeEnum(ReviewRating, { message: "Đánh giá không hợp lệ" }),

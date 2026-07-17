@@ -9,7 +9,7 @@ import {
     Star,
     Clock,
     Play,
-    Share2,
+    FileDown,
     Folder,
     CopyPlus,
     Flag,
@@ -24,6 +24,7 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 import { useDeck, useCloneDeck } from "@/queries/useDeckQuery"
+import deckService from "@/services/deck.service"
 import { useCreateReport } from "@/queries/useReportQuery"
 import { timeAgo } from "@/utils/timeAgo"
 import { StarRating } from "@/components/common/star-rating"
@@ -119,6 +120,18 @@ export default function DeckDetailPage() {
         }
     }
 
+    const handleExport = async () => {
+        try {
+            toast.loading("Đang tải xuống...")
+            await deckService.exportDeck(deck.id)
+            toast.dismiss()
+            toast.success("Tải xuống thành công")
+        } catch (e) {
+            toast.dismiss()
+            handleError(e)
+        }
+    }
+
     return (
         <div className="max-w-full space-y-8 px-4 py-6 md:px-6">
             {/* Hero Section */}
@@ -199,10 +212,11 @@ export default function DeckDetailPage() {
                         <div className="flex gap-3 sm:justify-end">
                             <Button
                                 variant="outline"
+                                onClick={handleExport}
                                 className="h-12 flex-1 sm:flex-initial rounded-xl border-beige bg-white text-text-primary font-bold transition-all hover:bg-cream hover:border-terracotta/20 px-5"
                             >
-                                <Share2 className="mr-2 size-4 text-text-muted" />
-                                Share
+                                <FileDown className="mr-2 size-4 text-text-muted" />
+                                Download
                             </Button>
                             {!isOwner && (
                                 <Button

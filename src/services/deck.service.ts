@@ -1,5 +1,6 @@
 import { ApiResponse } from "@/constants/apiResponse";
 import http from "@/utils/http";
+import api from "@/utils/axios";
 import { CreateDeckInput, DeckParams, DeckResponse, UpdateDeckInput } from "@/schemas/deck.schema";
 import { Pagination } from "@/constants/pagination";
 
@@ -56,6 +57,24 @@ const deckService = {
 
     toggleFeatured: (id: string) => {
         return http.patch<ApiResponse<DeckResponse>>(`${prefix}/${id}/feature`);
+    },
+
+    exportDeck: async (id: string, includeMedia = false) => {
+        const res = await api.get(`${prefix}/${id}/export`, {
+            params: { includeMedia },
+            responseType: 'blob',
+        });
+        const disposition = res.headers['content-disposition'] || '';
+        const match = disposition.match(/filename\s*=\s*"?([^"\s]+)"?\s*$/);
+        const filename = match ? match[1] : `${id}.rcl`;
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
     },
 };
 

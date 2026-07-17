@@ -2,9 +2,16 @@ import { z } from "zod";
 
 export const createSessionSchema = z.object({
     deckId: z.string().uuid().optional(),
+    sessionType: z.enum(['NORMAL', 'CRAM', 'PREVIEW']).optional(),
 });
 
 export type CreateSessionInput = z.infer<typeof createSessionSchema>;
+
+export const sessionTypeLabel: Record<string, string> = {
+    NORMAL: 'Học thường',
+    CRAM: 'Cram',
+    PREVIEW: 'Preview',
+};
 
 export const sessionParamsSchema = z.object({
     page: z.coerce.number().optional().default(1),
@@ -24,6 +31,7 @@ export type ReviewLogParams = z.infer<typeof reviewLogParamsSchema>;
 export interface StudySession {
     id: string;
     deckId: string | null;
+    sessionType: string;
     startedAt: string;
     endedAt: string | null;
     stats?: {

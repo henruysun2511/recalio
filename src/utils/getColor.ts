@@ -1,4 +1,4 @@
-const pastelColors = [
+export const pastelColors = [
     "bg-peach",
     "bg-yellow-soft",
     "bg-blue-soft",

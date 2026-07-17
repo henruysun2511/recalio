@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { CardFilter } from "./card/card-filter"
 import { STATE_BADGE } from "@/utils/mapping"
 import { CardState } from "@/constants/type"
-import { ImageOcclusionCardView } from "@/app/(user)/deck/[id]/create-notes/image-occlusion-card-view"
+import { CardPreview } from "@/components/common/card-preview"
 import type { Card } from "@/schemas/card.schema"
 
 interface CardsTabProps {
@@ -97,9 +97,7 @@ export function CardsTab({ deckId }: CardsTabProps) {
 }
 
 function CardItem({ card }: { card: Card }) {
-    const [flipped, setFlipped] = React.useState(false)
     const badge = STATE_BADGE[card.state] ?? { label: card.state, className: "bg-gray-100 text-gray-500 border-gray-200" }
-    const isOcclusion = !!card.occlusion
 
     return (
         <div className="group relative rounded-[28px] border border-beige bg-white p-5 shadow-sm transition-all hover:shadow-md">
@@ -110,50 +108,10 @@ function CardItem({ card }: { card: Card }) {
             </div>
 
             <div className="mt-6">
-                {isOcclusion && card.occlusion ? (
-                    <ImageOcclusionCardView
-                        imageUrl={card.occlusion.imageUrl}
-                        masks={card.occlusion.masks}
-                        variantIndex={card.variantIndex ?? 0}
-                        showBack={flipped}
-                        compact
-                    />
-                ) : (
-                    <div className={`min-h-[80px] flex items-center justify-center ${flipped ? "" : ""}`}>
-                        <style>{`
-                            .cloze { font-weight: 800; color: #92400e; background: rgba(251,191,36,0.15); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(251,191,36,0.3); }
-                            .cloze-reveal { font-weight: 800; color: #166534; background: rgba(34,197,94,0.12); padding: 1px 6px; border-radius: 4px; border: 1px solid rgba(34,197,94,0.3); }
-                        `}</style>
-                        <div
-                            className="prose prose-sm max-w-none text-center"
-                            dangerouslySetInnerHTML={{ __html: flipped ? card.backHtml : card.frontHtml }}
-                        />
-                    </div>
-                )}
+                <CardPreview card={card} compact />
             </div>
 
-            {card.css && (
-                <style>{card.css}</style>
-            )}
-
             <div className="mt-5 flex items-center justify-between border-t border-beige/60 pt-3">
-                <button
-                    onClick={() => setFlipped(!flipped)}
-                    className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold text-text-muted transition-all hover:bg-beige/40 hover:text-text-primary active:scale-95"
-                >
-                    {flipped ? (
-                        <>
-                            <EyeOffIcon className="size-3.5" />
-                            Mặt trước
-                        </>
-                    ) : (
-                        <>
-                            <EyeIcon className="size-3.5" />
-                            Mặt sau
-                        </>
-                    )}
-                </button>
-
                 <span className="text-[10px] font-medium text-text-muted/60">
                     {new Date(card.due).toLocaleDateString("vi-VN")}
                 </span>

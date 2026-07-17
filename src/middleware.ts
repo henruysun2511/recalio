@@ -28,7 +28,8 @@ function isUserRoute(pathname: string): boolean {
         pathname.startsWith("/document") ||
         pathname.startsWith("/suggestion") ||
         pathname.startsWith("/profile") ||
-        pathname.startsWith("/study")
+        pathname.startsWith("/study") ||
+        pathname.startsWith("/search")
     )
 }
 

@@ -3,14 +3,14 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useQueries } from "@tanstack/react-query"
-import { Brain, BookOpen, BarChart3, Clock, Play, Flame, Plus, Target, FilePlus, History } from "lucide-react"
+import { Brain, BookOpen, BarChart3, Clock, Play, Flame, Plus, Target, FilePlus, History, Zap, Eye } from "lucide-react"
 import { Title } from "@/components/common/title"
 import { EmptyState } from "@/components/common/empty-state"
 import { DeckSkeleton } from "@/components/common/skeleton/deck-skeleton"
 import { useMyDecks, useCreateDeck } from "@/queries/useDeckQuery"
 import { useCardStats } from "@/queries/useCardQuery"
 import { useXp, useDailyGoal, useStudyCalendar } from "@/queries/useGamificationQuery"
-import { useStudySessions } from "@/queries/useStudySessionQuery"
+import { useStudySessions, useCreateSession } from "@/queries/useStudySessionQuery"
 import { DeckDialog } from "../deck/deck-dialog"
 import { handleError } from "@/utils/handleError"
 import { toast } from "sonner"
@@ -22,6 +22,7 @@ export default function StudyPage() {
     const router = useRouter()
     const [dialogOpen, setDialogOpen] = useState(false)
     const createMutation = useCreateDeck()
+    const createCustomSession = useCreateSession()
     const { data: decksRes, isLoading: decksLoading } = useMyDecks({ page: 1, limit: 100 })
     const { data: statsRes } = useCardStats()
     const { data: xpRes } = useXp()
@@ -318,6 +319,52 @@ export default function StudyPage() {
                                             <Play className="size-3.5" />
                                             Học
                                         </button>
+                                    )}
+                                    {!isDeckEmpty && (
+                                        <>
+                                            <button
+                                                onClick={async () => {
+                                                    try {
+                                                        const res = await createCustomSession.mutateAsync({ deckId: deck.id, sessionType: 'CRAM' })
+                                                        const session = (res as any)?.data
+                                                        if (session?.id) router.push(`/study/${deck.id}?sessionId=${session.id}&mode=cram`)
+                                                    } catch (e) { handleError(e, "Không thể bắt đầu cram") }
+                                                }}
+                                                className="group relative flex items-center gap-1.5 rounded-xl border border-beige bg-white px-3 py-2 text-xs font-medium text-text-muted transition-all hover:bg-cream hover:text-text-primary"
+                                            >
+                                                <Zap className="size-3.5" />
+                                                Cram
+                                                <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                                                    Học tất cả thẻ, không giới hạn
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={async () => {
+                                                    try {
+                                                        const res = await createCustomSession.mutateAsync({ deckId: deck.id, sessionType: 'PREVIEW' })
+                                                        const session = (res as any)?.data
+                                                        if (session?.id) router.push(`/study/${deck.id}?sessionId=${session.id}&mode=preview`)
+                                                    } catch (e) { handleError(e, "Không thể bắt đầu preview") }
+                                                }}
+                                                className="group relative flex items-center gap-1.5 rounded-xl border border-beige bg-white px-3 py-2 text-xs font-medium text-text-muted transition-all hover:bg-cream hover:text-text-primary"
+                                            >
+                                                <Eye className="size-3.5" />
+                                                Preview
+                                                <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                                                    Xem trước, không ảnh hưởng lịch trình
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/study/${deck.id}/practice`)}
+                                                className="group relative flex items-center gap-1.5 rounded-xl border border-beige bg-white px-3 py-2 text-xs font-medium text-text-muted transition-all hover:bg-cream hover:text-text-primary"
+                                            >
+                                                <Brain className="size-3.5" />
+                                                Practice more
+                                                <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">
+                                                    Luyện tập với nhiều kiểu luyện tập khác
+                                                </span>
+                                            </button>
+                                        </>
                                     )}
                                     <button
                                         onClick={() => router.push(`/deck/${deck.id}/create-notes`)}

@@ -13,13 +13,14 @@ import { useMyDecks, useFeaturedDecks, useClonedDecks, usePublicDecks, useCreate
 import { CreateDeckInput, DeckParams, DeckResponse, UpdateDeckInput } from "@/schemas/deck.schema"
 import { SortOrder, DeckSortBy } from "@/constants/sort"
 import { handleError } from "@/utils/handleError"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, Archive } from "lucide-react"
 import reportService from "@/services/report.service"
 import { ReportReason } from "@/constants/type"
 import { toast } from "sonner"
 import { DeckFilter } from "./deck-filter"
 import { DeckDialog } from "./deck-dialog"
 import { DeckReportDialog } from "./deck-report-dialog"
+import { RclImportDialog } from "./rcl-import-dialog"
 
 export default function DeckPage() {
     const [params, setParams] = useState<DeckParams>({ page: 1, limit: 20, sortOrder: SortOrder.DESC, sort: DeckSortBy.CREATED_AT })
@@ -30,6 +31,7 @@ export default function DeckPage() {
     const [deleteDeckId, setDeleteDeckId] = useState<string | null>(null)
     const [reportDialogOpen, setReportDialogOpen] = useState(false)
     const [reportDeckId, setReportDeckId] = useState<string | null>(null)
+    const [rclImportOpen, setRclImportOpen] = useState(false)
     const [clonedParams, setClonedParams] = useState<DeckParams>({ page: 1, limit: 20, sortOrder: SortOrder.DESC, sort: DeckSortBy.CREATED_AT })
     const [clonedSearch, setClonedSearch] = useState("")
     const [publicParams, setPublicParams] = useState<DeckParams>({ page: 1, limit: 20, sortOrder: SortOrder.DESC, sort: DeckSortBy.CREATED_AT })
@@ -179,9 +181,14 @@ export default function DeckPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <Title title="Bộ thẻ của tôi" />
-                <Button onClick={() => setDialogOpen(true)} className="bg-terracotta text-white px-6 h-11 rounded-xl font-semibold hover:bg-terracotta-dark">
-                    <PlusIcon className="mr-2 size-4" /> Tạo bộ thẻ
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button onClick={() => setRclImportOpen(true)} variant="outline" className="border-beige px-5 h-11 rounded-xl font-semibold gap-2">
+                        <Archive className="size-4" /> Import RCL
+                    </Button>
+                    <Button onClick={() => setDialogOpen(true)} className="bg-terracotta text-white px-6 h-11 rounded-xl font-semibold hover:bg-terracotta-dark">
+                        <PlusIcon className="mr-2 size-4" /> Tạo bộ thẻ
+                    </Button>
+                </div>
             </div>
 
             <DeckFilter
@@ -252,6 +259,11 @@ export default function DeckPage() {
                 open={reportDialogOpen}
                 onOpenChange={(open) => { setReportDialogOpen(open); if (!open) setReportDeckId(null) }}
                 onConfirm={handleConfirmReport}
+            />
+
+            <RclImportDialog
+                open={rclImportOpen}
+                onOpenChange={(open) => { setRclImportOpen(open) }}
             />
 
 
