@@ -422,6 +422,11 @@ Recalio hỗ trợ nhiều phương pháp tạo thẻ và mẫu thẻ (template)
 | **Cloze** | Thẻ điền khuyết: chọn text làm lỗ hổng, tự động highlight khi ôn tập. |
 | **Image Occlusion** | Thẻ che/mở hình ảnh: tạo SVG overlay trên ảnh, nhóm occlusion để hiển thị theo nhóm. |
 
+<br/>
+<div align="center">
+<img src="public/template.png" alt="Review" width="80%">
+</div>
+
 ### ✍️ Tạo thủ công (Manual)
 
 Nhập từ vựng trực tiếp với các trường:
