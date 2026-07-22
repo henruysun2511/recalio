@@ -8,6 +8,7 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com/)
+<br/>
 RECALIO là nền tảng học từ vựng sử dụng thuật toán lặp lại ngắt quãng (Spaced Repetition — SM-2 / FSRS), cho phép người dùng tạo bộ thẻ, ôn tập theo lịch trình thông minh, và theo dõi tiến trình học tập. Hệ thống hỗ trợ nhiều loại mẫu thẻ (Basic, Basic Reversed, Cloze, Image Occlusion), tích hợp AI để sinh nội dung tự động (từ văn bản, chủ đề, hình ảnh), nhập liệu từ PDF và CSV, cùng cơ chế ôn tập dạng gõ đáp án (type-answer).
 
 </div>
